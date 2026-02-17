@@ -11,6 +11,7 @@ import { ArrowLeft, FileCode, Split, Copy, Check, AlertCircle } from 'lucide-rea
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { getAvailabilityInfo, getUnavailableMessage } from '../utils/leaseAvailability';
+import { maskLeaseCodeForPublicDisplay } from '../utils/leaseCodeMasking';
 
 export default function LeaseDetailsPage() {
   const { listingId } = useParams({ from: '/listings/$listingId' });
@@ -20,6 +21,7 @@ export default function LeaseDetailsPage() {
   const listing = listings?.find((l) => l.id === listingId);
 
   const handleCopyCode = async () => {
+    // Copy the full unmasked code
     if (listing?.code) {
       try {
         await navigator.clipboard.writeText(listing.code);
@@ -84,6 +86,7 @@ export default function LeaseDetailsPage() {
 
   const availabilityInfo = getAvailabilityInfo(listing.status);
   const unavailableMessage = getUnavailableMessage(listing.status);
+  const maskedCode = maskLeaseCodeForPublicDisplay(listing.code);
 
   return (
     <div className="container mx-auto px-4 py-6 sm:py-8">
@@ -123,15 +126,19 @@ export default function LeaseDetailsPage() {
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-muted-foreground">Lease Code (UUID)</p>
                       <div className="mt-1 flex items-center gap-2">
-                        <code className="block font-mono text-sm break-all">{listing.code}</code>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={handleCopyCode}
-                          className="flex-shrink-0"
-                        >
-                          {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                        </Button>
+                        <code className="block font-mono text-sm break-all">
+                          {maskedCode || 'N/A'}
+                        </code>
+                        {listing.code && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={handleCopyCode}
+                            className="flex-shrink-0"
+                          >
+                            {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                          </Button>
+                        )}
                       </div>
                     </div>
                   </div>

@@ -19,7 +19,9 @@ export default function IncomingRequestsPanel() {
       await updateStatus.mutateAsync({ requestId, status });
       toast.success(`Request ${status === Variant_rejected_accepted.accepted ? 'accepted' : 'rejected'}`);
     } catch (error: any) {
-      toast.error(error.message || 'Failed to update request status');
+      console.error('Update status error:', error);
+      const errorMessage = error.message || 'Failed to update request status. Please try again.';
+      toast.error(errorMessage);
     }
   };
 

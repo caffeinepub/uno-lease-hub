@@ -1,35 +1,72 @@
 {
   "kind": "build_request",
-  "title": "Rename login button to Admin Login",
-  "projectName": "ULO Lease Hub",
-  "priority": "normal",
+  "title": "Fix dashboard Internet Identity login and actor initialization",
+  "projectName": "Lease Code Dashboard",
+  "priority": "high",
   "requirements": [
     {
-      "id": "REQ-37",
-      "text": "Update the top navigation authentication button label so that when the user is not authenticated it displays \"Admin Login\" (or \"Admin Only\") instead of \"Login\", while keeping the authenticated state label as \"Logout\" and the in-progress label as \"Logging in...\".",
+      "id": "REQ-48",
+      "text": "Fix the dashboard authentication flow so that an admin can successfully sign in with Internet Identity and access /dashboard without getting stuck in an endless initialization state or failing silently.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-4"
         ],
         "quotes": [
-          "since I am the only user to login to the site ...can the login button say Admin login or Admin only instead of login"
+          "dashboard login is not working"
         ]
       },
       "acceptanceCriteria": [
-        "When not authenticated, the button rendered by frontend/src/components/auth/LoginButton.tsx displays \"Admin Login\" (or \"Admin Only\") instead of \"Login\".",
-        "When authenticated, the button still displays \"Logout\".",
-        "While the login action is in progress, the button still displays \"Logging in...\".",
-        "No backend/Candid changes are made for this text-only change."
+        "When a signed-out visitor navigates to /dashboard, they see a clear admin sign-in prompt and can complete the Internet Identity login flow.",
+        "After a successful Internet Identity login, /dashboard renders the dashboard content (tabs and panels) without requiring a manual page refresh.",
+        "The UI does not surface raw/internal errors (e.g., agent/actor errors) directly to end users during the login flow."
+      ]
+    },
+    {
+      "id": "REQ-49",
+      "text": "Correct actor-readiness detection for authenticated sessions so the app reliably creates and uses an authenticated backend actor after login (including re-initializing access control via _initializeAccessControlWithSecret) and accurately transitions between initializing, ready, and error states.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "dashboard login is not working"
+        ]
+      },
+      "acceptanceCriteria": [
+        "After login, the app uses an authenticated actor (not an anonymous actor) for dashboard operations that require admin permissions.",
+        "If actor creation or _initializeAccessControlWithSecret fails, RequireAuth shows the existing Connection Issue state (not an infinite spinner), and the Try Again button retries actor creation without a full page reload.",
+        "If actor initialization is simply slow, RequireAuth shows the existing Initialization Error timeout state after the configured timeout, and Try Again retries without a full page reload.",
+        "Retrying (Try Again) clears the prior error/timeout state and, on success, proceeds to render the dashboard."
+      ]
+    },
+    {
+      "id": "REQ-50",
+      "text": "Make the RequireAuth unauthenticated dashboard gate consistent with the single-admin intent by updating its login CTA copy to be admin-specific and in English (align with the TopNav login label behavior).",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "dashboard login is not working"
+        ]
+      },
+      "acceptanceCriteria": [
+        "On /dashboard while signed out, the login CTA uses admin wording (e.g., \"Admin Login\") instead of generic \"Sign In\".",
+        "All user-facing auth-gate text remains in English and remains consistent with frontend/src/components/auth/authGuardCopy.ts for error states."
       ]
     }
   ],
   "constraints": [
-    "Do not edit any files under frontend/src/components/ui (read-only UI components)."
+    "Do not edit files under frontend/src/hooks/useInternetIdentity.ts or frontend/src/hooks/useInternetIdentity.tsx (immutable paths).",
+    "Keep all backend logic in the existing single Motoko actor (backend/main.mo); only add a migration file if a stable-state upgrade is required (not expected for this fix)."
   ],
   "nonGoals": [
-    "Do not change authentication behavior, admin access control, or Internet Identity configuration.",
-    "Do not change any other copy beyond the unauthenticated login button label."
+    "Adding any new authentication provider beyond Internet Identity.",
+    "Implementing multi-admin roles or changing the product’s single-admin model.",
+    "Adding external logging/monitoring services."
   ],
   "imageRequirements": {
     "required": [],

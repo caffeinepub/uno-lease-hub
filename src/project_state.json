@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 29,
+  "projectStateVersion": 39,
   "summary": "Plan a custom, mobile-compatible website running on the ICP blockchain for UNO/ULO lease listings and lease-code distribution, using unitynodes.club as UI inspiration but aligning product/content guidance with https://unitynodes.io (Unity mobile app is not ICP-powered). The site should clearly communicate there is a single UNO/admin offering ULO lease codes, and ULO users only browse listings and copy lease codes for use in the Unity App (no additional ULO functionality).",
   "architectural_notes": [
     "Target deployment/runtime: ICP blockchain (Internet Computer).",
@@ -20,9 +20,13 @@
     "Draft environment may fail to load some images and YouTube embeds, causing media not to appear in draft previews.",
     "User reports being unable to log in to the site via Internet Identity (II sign-in flow not completing).",
     "Creating a lease listing can fail with \"Actor not available\" error (frontend unable to create authenticated actor / identity not available).",
-    "After logging out of the UNO dashboard, newly-updated lease code listings may not appear on the public site (public listings/details rendering issue when only Lease Code + Split Ratio are present)."
+    "After logging out of the UNO dashboard, newly-updated lease code listings may not appear on the public site (public listings/details rendering issue when only Lease Code + Split Ratio are present).",
+    "YouTube video embeds/Shorts section not working (videos do not play/load).",
+    "User reports seeing \"Actor not available\" error when attempting to log in (II/authenticated actor creation failing during login flow).",
+    "Production shows \"Initialization Error\" (trouble setting up session; suggests refresh) during/after login initialization.",
+    "Production shows \"Connection Issue\" / unable to establish connection to backend (possible canister/agent/network failure) alongside initialization error."
   ],
-  "isFixRequest": false,
+  "isFixRequest": true,
   "existing_features": [
     {
       "id": "feature-create-a-public-facing-website-ui-inspired-by-https-unitynodes-club-layout-and-interaction-patterns-but-implemented-as-a-standalone-react-app-running-on-the-internet-computer",
@@ -287,6 +291,110 @@
         "REQ-37"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-fix-the-embedded-youtube-shorts-so-the-videos-actually-load-and-play-anywhere-the-instructional-video-section-appears-e-g-how-it-works-and-dashboard-replace-the-placeholder-video-ids-in-frontend-src-components-media-youtubeshortssection-tsx-with-real-video-ids-from-https-www-youtube-com-unitynodesio-shorts-and-ensure-each-iframe-uses-a-valid-embed-url-for-those-shorts",
+      "title": "Fix the embedded YouTube Shorts so the videos actually load and play anywhere the instructional video section appears (e.g., How It Works and Dashboard). Replace the placeholder video IDs in frontend/src/components/media/YouTubeShortsSection.tsx with real video IDs from https://www.youtube.com/@UnityNodesIO/shorts and ensure each iframe uses a valid embed URL for those Shorts.",
+      "reqIds": [
+        "REQ-38"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-harden-the-youtube-embed-implementation-for-reliability-and-performance-add-safe-iframe-attributes-for-modern-browsers-and-keep-the-embeds-mobile-responsive-shorts-aspect-ratio-without-layout-overflow",
+      "title": "Harden the YouTube embed implementation for reliability and performance: add safe iframe attributes for modern browsers and keep the embeds mobile-responsive (Shorts aspect ratio) without layout overflow.",
+      "reqIds": [
+        "REQ-39"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-mask-the-displayed-lease-code-in-the-public-lease-browsing-ui-so-visitors-only-see-a-the-first-4-characters-from-the-start-of-the-lease-code-and-b-the-first-4-characters-from-the-segment-after-the-last-hyphen-while-never-changing-the-underlying-full-lease-code-value",
+      "title": "Mask the displayed Lease Code in the public lease browsing UI so visitors only see (a) the first 4 characters from the start of the lease code and (b) the first 4 characters from the segment after the last hyphen, while never changing the underlying full lease code value.",
+      "reqIds": [
+        "REQ-40"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-the-copy-to-clipboard-action-on-the-public-lease-details-page-copies-the-full-unmasked-lease-code-string-even-though-the-ui-displays-a-masked-version",
+      "title": "Ensure the Copy-to-Clipboard action on the public Lease Details page copies the full, unmasked lease code string even though the UI displays a masked version.",
+      "reqIds": [
+        "REQ-41"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-prevent-the-ui-from-surfacing-the-raw-error-message-actor-not-available-during-the-internet-identity-login-flow-by-ensuring-no-queries-or-ui-flows-attempt-authenticated-canister-calls-until-a-backend-actor-instance-is-ready-after-login",
+      "title": "Prevent the UI from surfacing the raw error message \"Actor not available\" during the Internet Identity login flow by ensuring no queries or UI flows attempt authenticated canister calls until a backend actor instance is ready after login.",
+      "reqIds": [
+        "REQ-42"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-frontend-hooks-that-currently-throw-actor-not-available-e-g-user-profile-and-dashboard-mutations-to-handle-the-actor-not-ready-state-gracefully-do-not-throw-this-message-instead-keep-queries-disabled-or-return-a-safe-no-op-blocked-state-and-provide-a-clear-english-user-facing-message-only-when-the-user-actually-tries-to-perform-an-action-that-requires-a-ready-actor",
+      "title": "Update frontend hooks that currently throw \"Actor not available\" (e.g., user profile and dashboard mutations) to handle the \"actor not ready\" state gracefully (do not throw this message; instead keep queries disabled or return a safe no-op/blocked state) and provide a clear, English user-facing message only when the user actually tries to perform an action that requires a ready actor.",
+      "reqIds": [
+        "REQ-43"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-defensive-ux-around-login-initialization-so-users-can-understand-and-recover-if-the-authenticated-actor-never-becomes-available-e-g-show-a-concise-english-error-state-with-a-retry-action-and-or-suggestion-to-refresh-without-exposing-internal-error-strings",
+      "title": "Add defensive UX around login initialization so users can understand and recover if the authenticated actor never becomes available (e.g., show a concise English error state with a retry action and/or suggestion to refresh), without exposing internal error strings.",
+      "reqIds": [
+        "REQ-44"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-authenticated-session-initialization-flow-so-it-can-distinguish-between-a-a-slow-timeout-actor-initialization-and-b-an-explicit-failure-to-create-the-backend-actor-e-g-network-canister-connectivity-error-and-present-the-appropriate-error-ui-state-instead-of-always-timing-out",
+      "title": "Update the authenticated-session initialization flow so it can distinguish between (a) a slow/timeout actor initialization and (b) an explicit failure to create the backend actor (e.g., network/canister connectivity error), and present the appropriate error UI state instead of always timing out.",
+      "reqIds": [
+        "REQ-45"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-non-refresh-recovery-action-for-initialization-failures-that-retries-actor-creation-and-dependent-queries-without-requiring-a-full-page-reload-while-keeping-the-existing-refresh-option-available",
+      "title": "Add a non-refresh recovery action for initialization failures that retries actor creation and dependent queries without requiring a full page reload, while keeping the existing refresh option available.",
+      "reqIds": [
+        "REQ-46"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-the-user-facing-copy-for-initialization-connection-errors-is-english-and-consistent-across-the-auth-guard-ui-matching-the-intended-wording-for-the-two-error-states-initialization-error-and-connection-issue",
+      "title": "Ensure the user-facing copy for initialization/connection errors is English and consistent across the auth-guard UI, matching the intended wording for the two error states (Initialization Error and Connection Issue).",
+      "reqIds": [
+        "REQ-47"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fix-the-dashboard-authentication-flow-so-that-an-admin-can-successfully-sign-in-with-internet-identity-and-access-dashboard-without-getting-stuck-in-an-endless-initialization-state-or-failing-silently",
+      "title": "Fix the dashboard authentication flow so that an admin can successfully sign in with Internet Identity and access /dashboard without getting stuck in an endless initialization state or failing silently.",
+      "reqIds": [
+        "REQ-48"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-correct-actor-readiness-detection-for-authenticated-sessions-so-the-app-reliably-creates-and-uses-an-authenticated-backend-actor-after-login-including-re-initializing-access-control-via-initializeaccesscontrolwithsecret-and-accurately-transitions-between-initializing-ready-and-error-states",
+      "title": "Correct actor-readiness detection for authenticated sessions so the app reliably creates and uses an authenticated backend actor after login (including re-initializing access control via _initializeAccessControlWithSecret) and accurately transitions between initializing, ready, and error states.",
+      "reqIds": [
+        "REQ-49"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-make-the-requireauth-unauthenticated-dashboard-gate-consistent-with-the-single-admin-intent-by-updating-its-login-cta-copy-to-be-admin-specific-and-in-english-align-with-the-topnav-login-label-behavior",
+      "title": "Make the RequireAuth unauthenticated dashboard gate consistent with the single-admin intent by updating its login CTA copy to be admin-specific and in English (align with the TopNav login label behavior).",
+      "reqIds": [
+        "REQ-50"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -427,6 +535,12 @@
     {
       "id": "AR-27",
       "summary": "Change the site login button label to reflect single-admin usage (e.g., \"Admin Login\" or \"Admin Only\" instead of \"Login\")",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-28",
+      "summary": "Mask lease codes in the UI: only display the first 4 characters and the first 4 characters after the last hyphen, while copying still copies the full lease code",
       "reqIds": [],
       "status": "pending"
     }

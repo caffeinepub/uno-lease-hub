@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useActor } from './useActor';
+import { useActorReadiness } from './useActorReadiness';
 import type { LeaseListing } from '../backend';
 
 // Public query - accessible to anonymous visitors
@@ -16,9 +17,9 @@ export function useGetPublicListings() {
   });
 }
 
-// Admin-only query
+// Admin-only query - requires authenticated actor
 export function useGetOwnerListings() {
-  const { actor, isFetching } = useActor();
+  const { actor, isActorReady } = useActorReadiness();
 
   return useQuery<LeaseListing[]>({
     queryKey: ['ownerListings'],
@@ -26,6 +27,6 @@ export function useGetOwnerListings() {
       if (!actor) return [];
       return actor.getOwnerListings();
     },
-    enabled: !!actor && !isFetching,
+    enabled: isActorReady,
   });
 }

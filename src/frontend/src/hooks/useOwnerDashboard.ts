@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useActor } from './useActor';
+import { useActorReadiness } from './useActorReadiness';
 import type { SplitRatio, LeaseStatus } from '../backend';
 
 export function useCreateLeaseListing() {
-  const { actor } = useActor();
+  const { actor, isActorReady } = useActorReadiness();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -22,7 +22,9 @@ export function useCreateLeaseListing() {
       area: bigint | null;
       capacity: bigint | null;
     }) => {
-      if (!actor) throw new Error('Actor not available');
+      if (!actor || !isActorReady) {
+        throw new Error('Please wait for sign-in to finish and try again.');
+      }
       return actor.createLeaseListing(id, code, splitRatio, location, area, capacity);
     },
     onSuccess: () => {
@@ -33,7 +35,7 @@ export function useCreateLeaseListing() {
 }
 
 export function useUpdateLeaseListing() {
-  const { actor } = useActor();
+  const { actor, isActorReady } = useActorReadiness();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -52,7 +54,9 @@ export function useUpdateLeaseListing() {
       area: bigint | null;
       capacity: bigint | null;
     }) => {
-      if (!actor) throw new Error('Actor not available');
+      if (!actor || !isActorReady) {
+        throw new Error('Please wait for sign-in to finish and try again.');
+      }
       return actor.updateLeaseListing(id, code, splitRatio, location, area, capacity);
     },
     onSuccess: () => {
@@ -63,12 +67,14 @@ export function useUpdateLeaseListing() {
 }
 
 export function useArchiveLeaseListing() {
-  const { actor } = useActor();
+  const { actor, isActorReady } = useActorReadiness();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (id: string) => {
-      if (!actor) throw new Error('Actor not available');
+      if (!actor || !isActorReady) {
+        throw new Error('Please wait for sign-in to finish and try again.');
+      }
       return actor.archiveLeaseListing(id);
     },
     onSuccess: () => {
@@ -79,12 +85,14 @@ export function useArchiveLeaseListing() {
 }
 
 export function useUpdateLeaseAvailability() {
-  const { actor } = useActor();
+  const { actor, isActorReady } = useActorReadiness();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async ({ id, status }: { id: string; status: LeaseStatus }) => {
-      if (!actor) throw new Error('Actor not available');
+      if (!actor || !isActorReady) {
+        throw new Error('Please wait for sign-in to finish and try again.');
+      }
       return actor.updateLeaseAvailability(id, status);
     },
     onSuccess: () => {

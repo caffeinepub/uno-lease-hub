@@ -1,11 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Change the unauthenticated top navigation login button label to “Admin Login” while keeping other authentication button states unchanged.
+**Goal:** Fix the /dashboard Internet Identity admin login flow so authenticated users reliably reach the dashboard without infinite initialization, silent failures, or manual refresh.
 
 **Planned changes:**
-- Update `frontend/src/components/auth/LoginButton.tsx` so the unauthenticated label displays “Admin Login” instead of “Login”.
-- Preserve the existing authenticated label (“Logout”) and in-progress label (“Logging in...”).
-- Ensure no changes are made to backend/auth behavior or to any files under `frontend/src/components/ui`.
+- Update the /dashboard auth gate (RequireAuth) to show a clear admin-specific login prompt when signed out, with English CTA copy consistent with existing auth-guard copy.
+- Fix authenticated actor readiness detection so that after Internet Identity login the app initializes and uses an authenticated backend actor (including re-running `_initializeAccessControlWithSecret`) and transitions cleanly between initializing, ready, and error/timeout states.
+- Ensure actor/initialization failures surface the existing “Connection Issue” or initialization timeout states (not an infinite spinner), and that “Try Again” retries initialization without a full page reload while clearing prior error/timeout state.
+- Prevent raw/internal agent/actor errors from being shown directly to end users during the login/initialization flow.
 
-**User-visible outcome:** When signed out, the top navigation authentication button reads “Admin Login”; when signed in it still reads “Logout”, and during sign-in it still reads “Logging in...”.
+**User-visible outcome:** Visiting /dashboard while signed out shows an “Admin Login” prompt; after successful Internet Identity login the dashboard loads automatically, and if initialization fails or times out the user sees a friendly error state with a working “Try Again” retry (no refresh needed).

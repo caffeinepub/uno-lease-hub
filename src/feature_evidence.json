@@ -2,10 +2,11 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-update-the-top-navigation-authentication-button-label-so-that-when-the-user-is-not-authenticated-it-displays-admin-login-or-admin-only-instead-of-login-while-keeping-the-authenticated-state-label-as-logout-and-the-in-progress-label-as-logging-in",
-      "featureTitle": "Update the top navigation authentication button label so that when the user is not authenticated it displays \"Admin Login\" (or \"Admin Only\") instead of \"Login\", while keeping the authenticated state label as \"Logout\" and the in-progress label as \"Logging in...\".",
+      "featureId": "feature-fix-the-dashboard-authentication-flow-so-that-an-admin-can-successfully-sign-in-with-internet-identity-and-access-dashboard-without-getting-stuck-in-an-endless-initialization-state-or-failing-silently",
+      "featureTitle": "Fix the dashboard authentication flow so that an admin can successfully sign in with Internet Identity and access /dashboard without getting stuck in an endless initialization state or failing silently.",
       "files": [
-        "frontend/src/components/auth/LoginButton.tsx"
+        "frontend/src/components/auth/RequireAuth.tsx",
+        "frontend/src/hooks/useActorReadiness.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -16,7 +17,46 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-37"
+        "REQ-48"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-correct-actor-readiness-detection-for-authenticated-sessions-so-the-app-reliably-creates-and-uses-an-authenticated-backend-actor-after-login-including-re-initializing-access-control-via-initializeaccesscontrolwithsecret-and-accurately-transitions-between-initializing-ready-and-error-states",
+      "featureTitle": "Correct actor-readiness detection for authenticated sessions so the app reliably creates and uses an authenticated backend actor after login (including re-initializing access control via _initializeAccessControlWithSecret) and accurately transitions between initializing, ready, and error states.",
+      "files": [
+        "frontend/src/components/auth/RequireAuth.tsx",
+        "frontend/src/hooks/useActorReadiness.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-49"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-make-the-requireauth-unauthenticated-dashboard-gate-consistent-with-the-single-admin-intent-by-updating-its-login-cta-copy-to-be-admin-specific-and-in-english-align-with-the-topnav-login-label-behavior",
+      "featureTitle": "Make the RequireAuth unauthenticated dashboard gate consistent with the single-admin intent by updating its login CTA copy to be admin-specific and in English (align with the TopNav login label behavior).",
+      "files": [
+        "frontend/src/components/auth/RequireAuth.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-50"
       ],
       "confidence": "high"
     }

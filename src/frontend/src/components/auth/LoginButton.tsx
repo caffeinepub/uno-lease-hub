@@ -18,6 +18,7 @@ export default function LoginButton() {
       try {
         await login();
       } catch (error: any) {
+        // Log for developers but don't show raw errors to users
         console.error('Login error:', error);
         if (error.message === 'User is already authenticated') {
           await clear();

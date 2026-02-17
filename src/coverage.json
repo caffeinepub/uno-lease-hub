@@ -1,24 +1,51 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-17T05:00:27.069Z",
+  "generatedAt": "2026-02-17T05:56:27.191Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 1,
-    "implemented": 1,
+    "total": 3,
+    "implemented": 3,
     "items": [
       {
-        "id": "REQ-37",
-        "summary": "Update the top navigation authentication button label so that when the user is not authenticated it displays \"Admin Login\" (or \"Admin Only\") instead of \"Login\", while keeping the authenticated state label as \"Logout\" and the in-progress label as \"Logging in...\".",
+        "id": "REQ-48",
+        "summary": "Fix the dashboard authentication flow so that an admin can successfully sign in with Internet Identity and access /dashboard without getting stuck in an endless initialization state or failing silently.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/auth/LoginButton.tsx"
+          "frontend/src/components/auth/RequireAuth.tsx",
+          "frontend/src/hooks/useActorReadiness.ts"
         ],
         "matchedFiles": [
-          "frontend/src/components/auth/LoginButton.tsx"
+          "frontend/src/components/auth/RequireAuth.tsx",
+          "frontend/src/hooks/useActorReadiness.ts"
+        ]
+      },
+      {
+        "id": "REQ-49",
+        "summary": "Correct actor-readiness detection for authenticated sessions so the app reliably creates and uses an authenticated backend actor after login (including re-initializing access control via _initializeAccessControlWithSecret) and accurately transitions between initializing, ready, and error states.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/hooks/useActor.ts",
+          "frontend/src/hooks/useActorReadiness.ts",
+          "frontend/src/components/auth/RequireAuth.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/hooks/useActorReadiness.ts",
+          "frontend/src/components/auth/RequireAuth.tsx"
+        ]
+      },
+      {
+        "id": "REQ-50",
+        "summary": "Make the RequireAuth unauthenticated dashboard gate consistent with the single-admin intent by updating its login CTA copy to be admin-specific and in English (align with the TopNav login label behavior).",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/auth/RequireAuth.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/auth/RequireAuth.tsx"
         ]
       }
     ]
@@ -28,7 +55,8 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/components/auth/LoginButton.tsx",
+    "frontend/src/components/auth/RequireAuth.tsx",
+    "frontend/src/hooks/useActorReadiness.ts",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

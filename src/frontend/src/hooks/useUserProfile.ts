@@ -1,34 +1,36 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useActor } from './useActor';
+import { useActorReadiness } from './useActorReadiness';
 import type { UserProfile } from '../backend';
 
 export function useGetCallerUserProfile() {
-  const { actor, isFetching: actorFetching } = useActor();
+  const { actor, isActorReady, isInitializing } = useActorReadiness();
 
   const query = useQuery<UserProfile | null>({
     queryKey: ['currentUserProfile'],
     queryFn: async () => {
-      if (!actor) throw new Error('Actor not available');
+      if (!actor) return null;
       return actor.getCallerUserProfile();
     },
-    enabled: !!actor && !actorFetching,
+    enabled: isActorReady,
     retry: false,
   });
 
   return {
     ...query,
-    isLoading: actorFetching || query.isLoading,
-    isFetched: !!actor && query.isFetched,
+    isLoading: isInitializing || query.isLoading,
+    isFetched: isActorReady && query.isFetched,
   };
 }
 
 export function useSaveCallerUserProfile() {
-  const { actor } = useActor();
+  const { actor, isActorReady } = useActorReadiness();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (profile: UserProfile) => {
-      if (!actor) throw new Error('Actor not available');
+      if (!actor || !isActorReady) {
+        throw new Error('Please wait for sign-in to finish and try again.');
+      }
       return actor.saveCallerUserProfile(profile);
     },
     onSuccess: () => {

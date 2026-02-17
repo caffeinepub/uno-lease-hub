@@ -1,14 +1,17 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
+import { useActorReadiness } from './useActorReadiness';
 import type { LeaseRequest, Variant_rejected_accepted } from '../backend';
 
 export function useSubmitLeaseRequest() {
-  const { actor } = useActor();
+  const { actor, isActorReady } = useActorReadiness();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async ({ listingId, info }: { listingId: string; info: string }) => {
-      if (!actor) throw new Error('Actor not available');
+      if (!actor || !isActorReady) {
+        throw new Error('Please wait for sign-in to finish and try again.');
+      }
       return actor.submitLeaseRequest(listingId, info);
     },
     onSuccess: () => {
@@ -18,7 +21,7 @@ export function useSubmitLeaseRequest() {
 }
 
 export function useGetTenantRequests() {
-  const { actor, isFetching } = useActor();
+  const { actor, isActorReady } = useActorReadiness();
 
   return useQuery<LeaseRequest[]>({
     queryKey: ['tenantRequests'],
@@ -26,12 +29,12 @@ export function useGetTenantRequests() {
       if (!actor) return [];
       return actor.getTenantRequests();
     },
-    enabled: !!actor && !isFetching,
+    enabled: isActorReady,
   });
 }
 
 export function useGetRequestsForOwner() {
-  const { actor, isFetching } = useActor();
+  const { actor, isActorReady } = useActorReadiness();
 
   return useQuery<LeaseRequest[]>({
     queryKey: ['ownerRequests'],
@@ -39,17 +42,19 @@ export function useGetRequestsForOwner() {
       if (!actor) return [];
       return actor.getRequestsForOwner();
     },
-    enabled: !!actor && !isFetching,
+    enabled: isActorReady,
   });
 }
 
 export function useUpdateRequestStatus() {
-  const { actor } = useActor();
+  const { actor, isActorReady } = useActorReadiness();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async ({ requestId, status }: { requestId: string; status: Variant_rejected_accepted }) => {
-      if (!actor) throw new Error('Actor not available');
+      if (!actor || !isActorReady) {
+        throw new Error('Please wait for sign-in to finish and try again.');
+      }
       return actor.updateRequestStatus(requestId, status);
     },
     onSuccess: () => {

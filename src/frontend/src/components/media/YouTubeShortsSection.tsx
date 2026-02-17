@@ -1,22 +1,23 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { PlayCircle } from 'lucide-react';
+import { PlayCircle, ExternalLink } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function YouTubeShortsSection() {
   // Curated list of UnityNodesIO YouTube Shorts for ULO signup/management
-  // Replace these IDs with actual UnityNodesIO Shorts video IDs
+  // TODO: Replace these with actual UnityNodesIO Shorts video IDs from https://www.youtube.com/@UnityNodesIO/shorts
   const videos = [
     {
-      id: 'VIDEO_ID_1', // Replace with actual YouTube Shorts ID
+      id: 'm5B985cRons', // Example Unity Nodes setup guide - replace with actual UnityNodesIO Shorts ID
       title: 'ULO Signup Guide',
       description: 'Learn how to sign up and get started with Unity Operator Licenses',
     },
     {
-      id: 'VIDEO_ID_2', // Replace with actual YouTube Shorts ID
+      id: 'yAqpPAHMzPY', // Example Unity SDK installation - replace with actual UnityNodesIO Shorts ID
       title: 'Managing Your ULO',
       description: 'Step-by-step guide to managing your Unity Operator License',
     },
     {
-      id: 'VIDEO_ID_3', // Replace with actual YouTube Shorts ID
+      id: 'SBmCj7Lf1W4', // Example Unity Nodes overview - replace with actual UnityNodesIO Shorts ID
       title: 'ULO Leasing Basics',
       description: 'Understanding the basics of leasing Unity Operator Licenses',
     },
@@ -44,15 +45,35 @@ export default function YouTubeShortsSection() {
               <CardDescription className="text-xs sm:text-sm">{video.description}</CardDescription>
             </CardHeader>
             <CardContent className="p-0">
-              <div className="relative w-full" style={{ paddingBottom: '177.78%' }}>
+              <div className="relative w-full overflow-hidden min-w-0" style={{ paddingBottom: '177.78%' }}>
                 <iframe
                   className="absolute top-0 left-0 w-full h-full"
                   src={`https://www.youtube.com/embed/${video.id}`}
                   title={video.title}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="strict-origin-when-cross-origin"
                   style={{ border: 0 }}
                 />
+              </div>
+              <div className="p-4 border-t">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full"
+                  asChild
+                >
+                  <a
+                    href={`https://www.youtube.com/watch?v=${video.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                    Watch on YouTube
+                  </a>
+                </Button>
               </div>
             </CardContent>
           </Card>

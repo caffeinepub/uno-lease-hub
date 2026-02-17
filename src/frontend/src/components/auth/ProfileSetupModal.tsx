@@ -1,20 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useInternetIdentity } from '../../hooks/useInternetIdentity';
 import { useGetCallerUserProfile, useSaveCallerUserProfile } from '../../hooks/useUserProfile';
+import { useActorReadiness } from '../../hooks/useActorReadiness';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function ProfileSetupModal() {
   const { identity } = useInternetIdentity();
+  const { isActorReady } = useActorReadiness();
   const { data: userProfile, isLoading: profileLoading, isFetched } = useGetCallerUserProfile();
   const saveProfile = useSaveCallerUserProfile();
   const [name, setName] = useState('');
 
   const isAuthenticated = !!identity;
-  const showProfileSetup = isAuthenticated && !profileLoading && isFetched && userProfile === null;
+  const showProfileSetup = isAuthenticated && isActorReady && !profileLoading && isFetched && userProfile === null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,8 +25,11 @@ export default function ProfileSetupModal() {
 
     try {
       await saveProfile.mutateAsync({ name: name.trim() });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to save profile:', error);
+      // Show user-friendly error message
+      const errorMessage = error.message || 'Failed to save profile. Please try again.';
+      toast.error(errorMessage);
     }
   };
 

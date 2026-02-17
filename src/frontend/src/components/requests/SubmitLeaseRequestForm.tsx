@@ -26,7 +26,9 @@ export default function SubmitLeaseRequestForm({ listingId }: SubmitLeaseRequest
       toast.success('Request submitted successfully!');
       setInfo('');
     } catch (error: any) {
-      toast.error(error.message || 'Failed to submit request');
+      console.error('Submit request error:', error);
+      const errorMessage = error.message || 'Failed to submit request. Please try again.';
+      toast.error(errorMessage);
     }
   };
 

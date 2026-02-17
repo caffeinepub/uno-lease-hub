@@ -43,7 +43,9 @@ export default function OwnerOffersPanel() {
       await archiveListing.mutateAsync(id);
       toast.success('Listing archived successfully');
     } catch (error: any) {
-      toast.error(error.message || 'Failed to archive listing');
+      console.error('Archive error:', error);
+      const errorMessage = error.message || 'Failed to archive listing. Please try again.';
+      toast.error(errorMessage);
     }
   };
 
@@ -52,7 +54,9 @@ export default function OwnerOffersPanel() {
       await updateAvailability.mutateAsync({ id, status });
       toast.success('Availability updated successfully');
     } catch (error: any) {
-      toast.error(error.message || 'Failed to update availability');
+      console.error('Update availability error:', error);
+      const errorMessage = error.message || 'Failed to update availability. Please try again.';
+      toast.error(errorMessage);
     }
   };
 

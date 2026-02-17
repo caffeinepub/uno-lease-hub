@@ -1,22 +1,68 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "ULO Lease Hub — Rename unauthenticated login button label to Admin Login",
+  "title": "Fix dashboard Internet Identity login and authenticated actor readiness",
   "requirements": [
     {
-      "id": "REQ-37",
-      "summary": "Change the unauthenticated top-nav auth button label from \"Login\" to \"Admin Login\" while keeping \"Logout\" and \"Logging in...\" unchanged.",
+      "id": "REQ-48",
+      "summary": "Ensure /dashboard login flow completes and the dashboard renders immediately after Internet Identity sign-in without infinite initialization or silent failures.",
       "acceptanceCriteria": [
-        "When not authenticated, the button rendered by frontend/src/components/auth/LoginButton.tsx displays \"Admin Login\" (or \"Admin Only\") instead of \"Login\".",
-        "When authenticated, the button still displays \"Logout\".",
-        "While the login action is in progress, the button still displays \"Logging in...\".",
-        "No backend/Candid changes are made for this text-only change."
+        "When a signed-out visitor navigates to /dashboard, they see a clear admin sign-in prompt and can complete the Internet Identity login flow.",
+        "After a successful Internet Identity login, /dashboard renders the dashboard content (tabs and panels) without requiring a manual page refresh.",
+        "The UI does not surface raw/internal errors (e.g., agent/actor errors) directly to end users during the login flow."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/auth/LoginButton.tsx",
+          "path": "frontend/src/components/auth/RequireAuth.tsx",
           "operation": "modify",
-          "description": "Update the unauthenticated render branch text label from \"Login\" to \"Admin Login\", leaving the authenticated (\"Logout\") and in-progress (\"Logging in...\") labels unchanged. Do not modify any files under frontend/src/components/ui (read-only UI components)."
+          "description": "Update the unauthenticated /dashboard gate to present an admin-specific sign-in prompt and to rely on unified actor-readiness states (initializing/ready/error) so successful login transitions to dashboard content without a page refresh; keep internal errors console-only."
+        },
+        {
+          "path": "frontend/src/hooks/useActorReadiness.ts",
+          "operation": "modify",
+          "description": "Refactor readiness logic to avoid duplicate/competing actor creation paths and to expose a single consistent set of states that RequireAuth can use to render login/initializing/error/ready without getting stuck."
+        }
+      ]
+    },
+    {
+      "id": "REQ-49",
+      "summary": "Make authenticated actor creation and readiness detection reliable (including access-control secret initialization) with correct transitions and retry behavior.",
+      "acceptanceCriteria": [
+        "After login, the app uses an authenticated actor (not an anonymous actor) for dashboard operations that require admin permissions.",
+        "If actor creation or _initializeAccessControlWithSecret fails, RequireAuth shows the existing Connection Issue state (not an infinite spinner), and the Try Again button retries actor creation without a full page reload.",
+        "If actor initialization is simply slow, RequireAuth shows the existing Initialization Error timeout state after the configured timeout, and Try Again retries without a full page reload.",
+        "Retrying (Try Again) clears the prior error/timeout state and, on success, proceeds to render the dashboard."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useActor.ts",
+          "operation": "modify",
+          "description": "Expose actor query status/error and a retry mechanism; ensure authenticated sessions create an identity-bound actor and re-run access-control initialization via _initializeAccessControlWithSecret (authorization component). Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/hooks/useActorReadiness.ts",
+          "operation": "modify",
+          "description": "Remove the separate actor-init-check query and instead derive readiness/error from the single actor source-of-truth; implement a refetchActor that properly forces authenticated actor recreation and clears prior error state for retries (authorization component). Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/auth/RequireAuth.tsx",
+          "operation": "modify",
+          "description": "Wire Try Again to the unified refetchActor so it clears timeout/error UI, retries actor creation/initialization without full page reload, and renders the dashboard as soon as actor readiness becomes true; ensure user-facing error text comes from AUTH_GUARD_COPY only."
+        }
+      ]
+    },
+    {
+      "id": "REQ-50",
+      "summary": "Align RequireAuth unauthenticated dashboard CTA copy with single-admin intent and TopNav (admin-specific, English).",
+      "acceptanceCriteria": [
+        "On /dashboard while signed out, the login CTA uses admin wording (e.g., \"Admin Login\") instead of generic \"Sign In\".",
+        "All user-facing auth-gate text remains in English and remains consistent with frontend/src/components/auth/authGuardCopy.ts for error states."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/auth/RequireAuth.tsx",
+          "operation": "modify",
+          "description": "Update unauthenticated gate copy to be admin-specific (button label and supporting text) while keeping error-state wording sourced from AUTH_GUARD_COPY and remaining fully English."
         }
       ]
     }
