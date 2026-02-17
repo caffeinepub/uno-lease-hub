@@ -1,0 +1,32 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-17T02:36:41.977Z",
+  "summary": "REQ-18 and REQ-20 appear implemented via a new Landing-page marketing section with app store badge links (correct URLs, target=_blank, rel=noopener noreferrer) and English external-destination copy with a disclaimer. REQ-19 is not evidenced because the required media-kit images are referenced but not shown as added under frontend/public/ in the diff summary.",
+  "missing_requirements": [
+    {
+      "id": "REQ-19",
+      "requirement": "Download and add UnityNodes media-kit logo assets from https://unitynodes.io/media-kit.html into the frontend as static public assets (frontend/public/...) and render at least one of them in a public-facing section; do not serve via backend.",
+      "reason": "The new UI references logo/badge images at /assets/generated/... but the diff summary shows no added image files under frontend/public/... (only a TSX component was added). Without the actual image assets added to the repo, the AC for adding/downloading media-kit assets as public static files is not met based on provided evidence.",
+      "evidence": [
+        "frontend/src/components/marketing/GetUnityNetworkAppSection.tsx"
+      ]
+    }
+  ],
+  "hallucinated_features": [
+    {
+      "description": "Footer copy/branding adjustments unrelated to the app-download links or media-kit logos.",
+      "reason": "BuildRequest only asks to add app-download links/section and incorporate media-kit logos; changes described to the footer are not requested in REQ-18/19/20.",
+      "evidence": [
+        "frontend-file-summaries.txt (mentions: \"frontend/src/components/layout/Footer.tsx\" updated description)"
+      ]
+    }
+  ],
+  "confidence": 0.74,
+  "changed_files": [
+    "frontend-file-summaries.txt",
+    "frontend/src/components/marketing/GetUnityNetworkAppSection.tsx",
+    "frontend/src/pages/LandingPage.tsx",
+    "project_state.json"
+  ]
+}

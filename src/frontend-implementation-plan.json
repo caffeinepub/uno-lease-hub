@@ -1,0 +1,85 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Add Unity Network App download section and UnityNodes media-kit logos (frontend-only)",
+  "requirements": [
+    {
+      "id": "REQ-18",
+      "summary": "Add a prominent, mobile-responsive download section on the public landing page with outbound links to Google Play and Apple App Store.",
+      "acceptanceCriteria": [
+        "Landing page displays a clearly labeled section offering both Google Play and Apple App Store links.",
+        "Both links use the exact URLs provided and open in a new tab (target=\"_blank\") with rel=\"noopener noreferrer\".",
+        "Section layout is responsive on small screens (buttons/badges stack and remain readable/tappable)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/marketing/GetUnityNetworkAppSection.tsx",
+          "operation": "create",
+          "description": "Create a reusable public-facing \"Get the Unity Network App\" section component with responsive layout (stacked on mobile, side-by-side on larger screens) and two external links using the exact provided store URLs with target=\"_blank\" and rel=\"noopener noreferrer\"."
+        },
+        {
+          "path": "frontend/src/pages/LandingPage.tsx",
+          "operation": "modify",
+          "description": "Wire the new GetUnityNetworkAppSection into the public Landing page (prominent placement, at minimum on the landing page) and ensure it is visually distinct from existing hero/features/CTA sections."
+        }
+      ]
+    },
+    {
+      "id": "REQ-19",
+      "summary": "Add UnityNodes media-kit logo assets and app store badge graphics as static public assets and render at least one logo in the public UI.",
+      "acceptanceCriteria": [
+        "Logos from https://unitynodes.io/media-kit.html are added to the repo under a public static assets directory (frontend/public/...).",
+        "The site renders at least one of the downloaded logo assets in a public-facing section (e.g., the download section).",
+        "No backend endpoints are added/used to serve these images."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/public/assets/generated/unitynodes-logo-wordmark.dim_1200x300.png",
+          "operation": "create",
+          "description": "Add the UnityNodes logo wordmark image as a static public asset at frontend/public/assets/generated/unitynodes-logo-wordmark.dim_1200x300.png (downloaded from https://unitynodes.io/media-kit.html)."
+        },
+        {
+          "path": "frontend/public/assets/generated/unitynodes-logo-mark.dim_512x512.png",
+          "operation": "create",
+          "description": "Add the UnityNodes logo mark/icon image as a static public asset at frontend/public/assets/generated/unitynodes-logo-mark.dim_512x512.png (downloaded from https://unitynodes.io/media-kit.html)."
+        },
+        {
+          "path": "frontend/public/assets/generated/google-play-badge.dim_512x152.png",
+          "operation": "create",
+          "description": "Add the Google Play badge graphic as a static public asset at frontend/public/assets/generated/google-play-badge.dim_512x152.png."
+        },
+        {
+          "path": "frontend/public/assets/generated/app-store-badge.dim_512x152.png",
+          "operation": "create",
+          "description": "Add the Apple App Store badge graphic as a static public asset at frontend/public/assets/generated/app-store-badge.dim_512x152.png."
+        },
+        {
+          "path": "frontend/src/components/marketing/GetUnityNetworkAppSection.tsx",
+          "operation": "modify",
+          "description": "Update the download section component to render at least one UnityNodes logo asset (e.g., frontend/public/assets/generated/unitynodes-logo-wordmark.dim_1200x300.png) and use the store badge images (frontend/public/assets/generated/google-play-badge.dim_512x152.png and frontend/public/assets/generated/app-store-badge.dim_512x152.png) as the primary tappable link visuals. Verify the component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-20",
+      "summary": "Ensure English copy clearly labels app store links as external destinations and avoids implying the Unity mobile app runs on ICP.",
+      "acceptanceCriteria": [
+        "Download section includes English copy that makes it clear the user is going to external app store pages.",
+        "Copy does not state or imply the Unity mobile app is ICP-powered.",
+        "All added/updated user-facing text for this change is English."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/marketing/GetUnityNetworkAppSection.tsx",
+          "operation": "modify",
+          "description": "Add/adjust English user-facing copy around the download buttons/logos to explicitly state the links go to external app store pages and to avoid any claim or implication that the Unity Network mobile app itself is ICP-powered (only the website/marketplace may be ICP-powered)."
+        },
+        {
+          "path": "frontend/src/pages/LandingPage.tsx",
+          "operation": "modify",
+          "description": "Ensure surrounding Landing page context near the download section remains consistent with the clarified messaging (English-only text and no implication that the Unity mobile app runs on ICP)."
+        }
+      ]
+    }
+  ]
+}

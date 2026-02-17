@@ -1,0 +1,252 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 13,
+  "summary": "Plan a custom, mobile-compatible website running on the ICP blockchain for UNO/ULO lease listings and lease-code distribution, using unitynodes.club as UI inspiration but aligning product/content guidance with https://unitynodes.io (Unity mobile app is not ICP-powered). The site should clearly communicate there is a single UNO/admin offering ULO lease codes, and ULO users only browse listings and copy lease codes for use in the Unity App (no additional ULO functionality).",
+  "architectural_notes": [
+    "Target deployment/runtime: ICP blockchain (Internet Computer).",
+    "Starting point/reference implementation: https://unitynodes.club to be modified/customized.",
+    "Add responsive/mobile-first design requirements for all core flows (public pages + authenticated dashboard).",
+    "Content/branding reference source: https://unitynodes.io and its media kit assets.",
+    "Product constraint: Only one UNO/admin will offer ULO lease codes; public copy and flows should reflect a single-offer/operator model.",
+    "Product constraint: Unity mobile app is not ICP-powered; only this website is deployed on ICP and should avoid implying the Unity leasing service/app runs on ICP.",
+    "Product constraint: ULO users only browse listings and copy lease codes for use in the Unity App; no other ULO-facing functions are provided.",
+    "Security requirement: Admin/dashboard access should be restricted to an allowlist containing the UNO's Internet Identity principal (single-admin mode).",
+    "Home page copy should remove/avoid the \"UnityNodes\" branding/name and the provided headline/UNO section text; keep messaging aligned with the single-UNO, ULO-browse/copy-code scope constraints.",
+    "Add public-facing app download CTAs linking to Google Play and Apple App Store (Unity Network App) on relevant pages (e.g., Home and/or How It Works)."
+  ],
+  "known_issues": [
+    "Safety system may block sharing of the user's Internet Identity principal, preventing configuration of single-admin allowlist via chat.",
+    "Build/deploy action to 'make the site live' intermittently fails with an error ('AI couldn't process your request successfully').",
+    "Draft environment may fail to load some images and YouTube embeds, causing media not to appear in draft previews."
+  ],
+  "isFixRequest": false,
+  "imageRequirements": "## Required Images\n- UnityNodes logo wordmark (unitynodes-logo-wordmark.dim_1200x300.png)\n- UnityNodes logo icon/mark (unitynodes-logo-mark.dim_512x512.png)\n- Google Play badge graphic (google-play-badge.dim_512x152.png)\n- Apple App Store badge graphic (app-store-badge.dim_512x152.png)",
+  "existing_features": [
+    {
+      "id": "feature-create-a-public-facing-website-ui-inspired-by-https-unitynodes-club-layout-and-interaction-patterns-but-implemented-as-a-standalone-react-app-running-on-the-internet-computer",
+      "title": "Create a public-facing website UI inspired by https://unitynodes.club (layout and interaction patterns), but implemented as a standalone React app running on the Internet Computer.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-internet-identity-authentication-so-a-user-can-sign-in-out-and-the-app-can-identify-the-current-principal-for-lease-actions",
+      "title": "Implement Internet Identity authentication so a user can sign in/out and the app can identify the current principal for lease actions.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-a-public-lease-listings-page-that-displays-active-lease-offers-and-a-lease-details-view-for-a-selected-offer",
+      "title": "Build a public Lease Listings page that displays active lease offers and a Lease Details view for a selected offer.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-lease-request-workflow-allow-a-signed-in-user-to-submit-a-request-for-a-specific-lease-offer-and-persist-those-requests-on-the-backend",
+      "title": "Add a lease request workflow: allow a signed-in user to submit a request for a specific lease offer, and persist those requests on the backend.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-an-authenticated-uno-dashboard-for-the-lease-owner-to-manage-offers-and-review-incoming-lease-requests-for-their-offers",
+      "title": "Add an authenticated UNO dashboard for the lease owner to manage offers and review incoming lease requests for their offers.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-apply-a-distinct-coherent-visual-theme-not-blue-purple-across-the-site-with-consistent-typography-spacing-and-component-styling-appropriate-for-a-professional-leasing-validator-style-product",
+      "title": "Apply a distinct, coherent visual theme (not blue/purple) across the site with consistent typography, spacing, and component styling appropriate for a professional leasing/validator-style product.",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-generated-static-image-assets-for-the-site-logo-hero-accents-and-render-them-from-frontend-public-assets-generated-not-via-the-backend",
+      "title": "Add generated static image assets for the site (logo/hero accents) and render them from frontend/public/assets/generated (not via the backend).",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-user-facing-marketing-copy-and-outbound-links-so-the-site-clearly-represents-an-icp-deployed-app-aligned-with-https-unitynodes-io-and-does-not-imply-that-the-unitynodes-leasing-service-itself-runs-on-icp-include-a-clear-external-link-to-https-unitynodes-io-for-more-information",
+      "title": "Update user-facing marketing copy and outbound links so the site clearly represents an ICP-deployed app aligned with https://unitynodes.io (and does not imply that the UnityNodes leasing service itself runs on ICP). Include a clear external link to https://unitynodes.io for more information.",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-the-website-is-fully-mobile-device-compatible-responsive-layout-and-interaction-across-key-pages-landing-lease-listings-lease-details-how-it-works-and-dashboard-including-tabs-fix-any-overflow-cramped-layouts-or-non-tap-friendly-controls-on-small-screens",
+      "title": "Ensure the website is fully mobile-device compatible (responsive layout and interaction) across key pages: Landing, Lease Listings, Lease Details, How It Works, and Dashboard (including tabs). Fix any overflow, cramped layouts, or non-tap-friendly controls on small screens.",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-incorporate-approved-brand-media-images-from-https-unitynodes-io-media-kit-html-into-the-site-as-static-frontend-assets-and-use-them-in-appropriate-public-facing-sections-e-g-landing-hero-feature-area-and-or-footer-do-not-serve-these-images-via-the-backend",
+      "title": "Incorporate approved brand/media images from https://unitynodes.io/media-kit.html into the site as static frontend assets and use them in appropriate public-facing sections (e.g., Landing hero/feature area and/or Footer). Do not serve these images via the backend.",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-an-instructional-video-section-that-embeds-relevant-youtube-shorts-from-https-www-youtube-com-unitynodesio-shorts-related-to-ulo-signups-and-management-the-embeds-must-be-responsive-and-usable-on-mobile",
+      "title": "Add an instructional video section that embeds relevant YouTube Shorts from https://www.youtube.com/@UnityNodesIO/shorts related to ULO signups and management. The embeds must be responsive and usable on mobile.",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-step-card-copy-on-the-how-it-works-page-frontend-src-pages-howitworkspage-tsx-to-reflect-the-ulo-flow-and-include-the-user-provided-wording-specifically-1-set-the-first-step-title-to-browse-listings-with-description-explore-available-ulo-lease-code-opportunities-and-2-replace-the-current-submit-a-request-step-with-copy-that-explains-copying-the-lease-code-for-use-in-the-unity-app-e-g-title-copy-the-lease-code-and-description-found-a-listing-you-like-copy-the-code-for-use-in-the-unity-app-remove-or-rewrite-any-step-text-that-implies-ulo-users-must-sign-in-or-submit-requests-if-that-is-no-longer-the-intended-flow-for-this-page",
+      "title": "Update the step-card copy on the How It Works page (frontend/src/pages/HowItWorksPage.tsx) to reflect the ULO flow and include the user-provided wording, specifically: (1) set the first step title to \"Browse Listings\" with description \"Explore available ULO lease code opportunities.\" and (2) replace the current \"Submit a Request\" step with copy that explains copying the lease code for use in the Unity app (e.g., title \"Copy the Lease Code\" and description \"Found a listing you like? Copy the code for use in the Unity App\"). Remove or rewrite any step text that implies ULO users must sign in or submit requests if that is no longer the intended flow for this page.",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-expand-the-how-it-works-page-content-to-provide-more-detailed-guidance-modeled-after-the-level-of-detail-on-https-unitynodes-club-en-unity-license-operator-guide-while-keeping-all-user-facing-text-in-english-and-aligned-with-this-app-s-scope-ulo-users-browse-listings-and-copy-lease-codes-for-use-in-the-unity-app-unitynodes-service-itself-is-external-add-additional-structured-sections-below-the-step-cards-and-above-or-below-the-existing-youtubeshortssection-as-appropriate-such-as-what-a-lease-code-is-prerequisites-before-browsing-how-to-copy-use-a-code-in-the-unity-app-common-issues-troubleshooting-and-a-short-faq-keep-the-existing-external-link-to-https-unitynodes-io",
+      "title": "Expand the How It Works page content to provide more detailed guidance modeled after the level of detail on https://unitynodes.club/en/unity-license-operator-guide/ while keeping all user-facing text in English and aligned with this app’s scope (ULO users browse listings and copy lease codes for use in the Unity app; UnityNodes service itself is external). Add additional structured sections below the step cards (and above or below the existing YouTubeShortsSection as appropriate) such as: what a lease code is, prerequisites before browsing, how to copy/use a code in the Unity app, common issues/troubleshooting, and a short FAQ. Keep the existing external link to https://unitynodes.io.",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-home-page-frontend-src-pages-landingpage-tsx-to-remove-unitynodes-branding-and-the-specified-unitynodes-uno-marketing-copy-specifically-remove-the-unitynodes-wordmark-logo-block-in-the-hero-section-remove-the-hero-text-that-mentions-unitynodes-and-this-icp-powered-app-helps-unity-license-operators-ulos-manage-lease-listings-and-requests-and-remove-the-entire-about-unitynodes-section-including-its-text-image-and-button-so-that-no-unitynodes-branded-section-remains-on-the-home-page",
+      "title": "Update the Home page (frontend/src/pages/LandingPage.tsx) to remove UnityNodes branding and the specified UnityNodes/UNO marketing copy. Specifically: remove the UnityNodes wordmark/logo block in the hero section; remove the hero text that mentions \"UnityNodes\" and \"This ICP-powered app helps Unity License Operators (ULOs) manage lease listings and requests\"; and remove the entire \"About UnityNodes\" section (including its text, image, and button) so that no UnityNodes-branded section remains on the Home page.",
+      "reqIds": [
+        "REQ-15"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-site-footer-content-frontend-src-components-layout-footer-tsx-so-that-when-viewed-on-the-home-page-it-does-not-display-unitynodes-branding-or-the-specific-tagline-text-icp-powered-lease-management-app-for-unity-license-operators-remove-unitynodes-name-logo-references-from-the-footer-and-replace-the-tagline-with-neutral-app-text-that-does-not-mention-unitynodes",
+      "title": "Update the site footer content (frontend/src/components/layout/Footer.tsx) so that, when viewed on the Home page, it does not display UnityNodes branding or the specific tagline text \"ICP-powered lease management app for Unity License Operators.\". Remove UnityNodes name/logo references from the footer and replace the tagline with neutral app text that does not mention UnityNodes.",
+      "reqIds": [
+        "REQ-16"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-how-it-works-page-frontend-src-pages-howitworkspage-tsx-to-remove-the-specified-instructional-steps-and-listing-attribute-filter-description-text-specifically-remove-a-the-two-ordered-list-items-under-the-copy-the-lease-code-section-click-on-the-listing-to-view-its-full-details-and-locate-the-lease-code-displayed-on-the-listing-detail-page-and-b-the-listing-attribute-definitions-and-filter-guidance-under-browse-available-listings-the-location-area-and-capacity-bullet-definitions-and-the-sentence-use-the-filter-options-to-narrow-down-listings-by-location-area-or-capacity-to-find-the-perfect-match-for-your-needs-after-removal-ensure-the-remaining-text-still-reads-naturally-in-english-adjust-surrounding-sentences-intro-text-only-as-needed-without-adding-new-concepts",
+      "title": "Update the How It Works page (frontend/src/pages/HowItWorksPage.tsx) to remove the specified instructional steps and listing attribute/filter-description text. Specifically remove: (a) the two ordered-list items under the \"Copy the Lease Code\" section: \"Click on the listing to view its full details\" and \"Locate the lease code displayed on the listing detail page\"; and (b) the listing attribute definitions and filter guidance under \"Browse Available Listings\": the \"Location\", \"Area\", and \"Capacity\" bullet definitions and the sentence \"Use the filter options to narrow down listings by location, area, or capacity to find the perfect match for your needs.\". After removal, ensure the remaining text still reads naturally in English (adjust surrounding sentences/intro text only as needed without adding new concepts).",
+      "reqIds": [
+        "REQ-17"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-prominent-mobile-responsive-get-the-unity-network-app-section-that-links-to-the-official-app-store-pages-google-play-https-play-google-com-store-apps-details-id-io-unitynodes-unityapp-and-apple-app-store-https-apps-apple-com-us-app-unity-network-app-id6755482738-place-this-section-on-the-public-site-at-minimum-on-the-home-landing-page-and-ensure-the-links-open-in-a-new-tab-with-proper-rel-attributes",
+      "title": "Add a prominent, mobile-responsive \"Get the Unity Network App\" section that links to the official app store pages: Google Play https://play.google.com/store/apps/details?id=io.unitynodes.unityapp and Apple App Store https://apps.apple.com/us/app/unity-network-app/id6755482738. Place this section on the public site (at minimum on the Home/Landing page) and ensure the links open in a new tab with proper rel attributes.",
+      "reqIds": [
+        "REQ-18"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-download-and-add-unitynodes-media-kit-logo-assets-from-https-unitynodes-io-media-kit-html-into-the-frontend-as-static-public-assets-prioritizing-the-available-logos-and-use-them-in-the-ui-where-appropriate-e-g-within-the-new-download-section-and-or-header-footer-without-serving-these-images-via-the-backend",
+      "title": "Download and add UnityNodes media-kit logo assets from https://unitynodes.io/media-kit.html into the frontend as static public assets, prioritizing the available logos, and use them in the UI where appropriate (e.g., within the new download section and/or header/footer), without serving these images via the backend.",
+      "reqIds": [
+        "REQ-19"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-user-facing-text-around-the-app-download-links-and-any-displayed-media-kit-logos-to-be-in-english-and-to-clearly-indicate-these-are-external-app-store-destinations-no-implication-that-the-unity-mobile-app-itself-runs-on-icp",
+      "title": "Update user-facing text around the app-download links and any displayed media-kit logos to be in English and to clearly indicate these are external app store destinations (no implication that the Unity mobile app itself runs on ICP).",
+      "reqIds": [
+        "REQ-20"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Create a custom ICP blockchain website based on https://unitynodes.club",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Add functionality for a UNO to list and lease out leases (lease offering/management workflow)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Define and implement the backend data model and API for lease listings, including creating, reading, updating, and archiving lease offers owned by a UNO principal.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Ensure the website is fully mobile-device compatible (responsive design across key pages and dashboard) for ICP deployment",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Incorporate approved brand/media assets from https://unitynodes.io/media-kit.html into the site (images/branding where appropriate)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-8",
+      "summary": "Embed/feature relevant instructional YouTube Shorts from https://www.youtube.com/@UnityNodesIO/shorts related to ULO signups and management",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-9",
+      "summary": "Update/expand the 'How It Works' page copy/steps to better explain the ULO flow (browse listings, copy lease code for use in the Unity App) and model the level of detail after https://unitynodes.club/en/unity-license-operator-guide/",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-10",
+      "summary": "Add admin access control to lock the authenticated dashboard/admin functions to a single approved Internet Identity principal (UNO-only admin)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-11",
+      "summary": "Simplify/update public marketing wording across the site to clearly state there is only one UNO offering ULO lease codes, the Unity app is not ICP-powered, and ULO users only obtain lease codes (no other client functions)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-12",
+      "summary": "Remove specific instructional steps and listing attribute/filter-description text from the How It Works page",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-13",
+      "summary": "Add prominent onsite links/buttons to download the Unity Network App from Google Play and Apple App Store",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "UNO Lease Hub",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

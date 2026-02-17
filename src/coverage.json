@@ -1,0 +1,76 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-17T02:36:41.981Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 3,
+    "implemented": 3,
+    "items": [
+      {
+        "id": "REQ-18",
+        "summary": "Add a prominent, mobile-responsive \"Get the Unity Network App\" section that links to the official app store pages: Google Play https://play.google.com/store/apps/details?id=io.unitynodes.unityapp and Apple App Store https://apps.apple.com/us/app/unity-network-app/id6755482738. Place this section on the public site (at minimum on the Home/Landing page) and ensure the links open in a new tab with proper rel attributes.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/marketing/GetUnityNetworkAppSection.tsx",
+          "frontend/src/pages/LandingPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/marketing/GetUnityNetworkAppSection.tsx",
+          "frontend/src/pages/LandingPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-19",
+        "summary": "Download and add UnityNodes media-kit logo assets from https://unitynodes.io/media-kit.html into the frontend as static public assets, prioritizing the available logos, and use them in the UI where appropriate (e.g., within the new download section and/or header/footer), without serving these images via the backend.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/public/assets/generated/unitynodes-logo-wordmark.dim_1200x300.png",
+          "frontend/public/assets/generated/unitynodes-logo-mark.dim_512x512.png",
+          "frontend/public/assets/generated/google-play-badge.dim_512x152.png",
+          "frontend/public/assets/generated/app-store-badge.dim_512x152.png",
+          "frontend/src/components/marketing/GetUnityNetworkAppSection.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/public/assets/generated/unitynodes-logo-wordmark.dim_1200x300.png",
+          "frontend/public/assets/generated/unitynodes-logo-mark.dim_512x512.png",
+          "frontend/public/assets/generated/google-play-badge.dim_512x152.png",
+          "frontend/public/assets/generated/app-store-badge.dim_512x152.png",
+          "frontend/src/components/marketing/GetUnityNetworkAppSection.tsx"
+        ]
+      },
+      {
+        "id": "REQ-20",
+        "summary": "Update user-facing text around the app-download links and any displayed media-kit logos to be in English and to clearly indicate these are external app store destinations (no implication that the Unity mobile app itself runs on ICP).",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/marketing/GetUnityNetworkAppSection.tsx",
+          "frontend/src/pages/LandingPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/marketing/GetUnityNetworkAppSection.tsx",
+          "frontend/src/pages/LandingPage.tsx"
+        ]
+      }
+    ]
+  },
+  "changedFiles": [
+    "build-request.json",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/public/assets/generated/app-store-badge.dim_512x152.png",
+    "frontend/public/assets/generated/google-play-badge.dim_512x152.png",
+    "frontend/public/assets/generated/unitynodes-logo-mark.dim_512x512.png",
+    "frontend/public/assets/generated/unitynodes-logo-wordmark.dim_1200x300.png",
+    "frontend/src/components/marketing/GetUnityNetworkAppSection.tsx",
+    "frontend/src/pages/LandingPage.tsx",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}
