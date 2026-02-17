@@ -1,26 +1,35 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-17T03:12:51.663Z",
+  "generatedAt": "2026-02-17T03:50:34.738Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 1,
-    "implemented": 1,
+    "total": 2,
+    "implemented": 2,
     "items": [
       {
-        "id": "REQ-26",
-        "summary": "Update the frontend routing strategy so the app works reliably when deployed live on the Internet Computer, including direct navigation and browser refresh on non-root routes (e.g., /listings, /listings/:listingId, /how-it-works, /dashboard) without returning a 404.",
+        "id": "REQ-27",
+        "summary": "Update the Dashboard \"Create Lease Listing\" / \"Edit Lease Listing\" dialog (frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx) so the only user-input required fields are: Listing ID, Lease Code (UUID string), and Split Ratio (NLO/ULO, e.g., 60/40). Remove Location, Area, and Capacity from the required validation and from the primary form UI (they may be omitted entirely or moved into an optional/advanced section that is not required to submit).",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/App.tsx",
-          "frontend/public/404.html",
-          "frontend/index.html"
+          "frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/App.tsx"
+          "frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx"
+        ]
+      },
+      {
+        "id": "REQ-28",
+        "summary": "Ensure the dashboard create/update listing mutations still send valid values to the existing backend API even when Location/Area/Capacity are not entered by the user, by automatically supplying safe defaults in the dialog submit handler (e.g., Location=\"Unspecified\", Area=0, Capacity=0) while preserving the user-entered Listing ID, Lease Code, and Split Ratio.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx"
         ]
       }
     ]
@@ -30,7 +39,7 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/App.tsx",
+    "frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

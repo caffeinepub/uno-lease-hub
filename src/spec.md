@@ -1,10 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Make frontend routing work reliably when deployed on the Internet Computer, including direct URL navigation and browser refresh on non-root routes without 404s.
+**Goal:** Simplify the dashboard Create/Edit Lease Listing dialog so users only need to enter Listing ID, Lease Code, and Split Ratio to submit successfully.
 
 **Planned changes:**
-- Update the frontend routing strategy to be Internet Computer–safe for client-side routes (e.g., /listings, /listings/:listingId, /how-it-works, /dashboard).
-- Ensure deployed builds correctly serve the app entry for direct navigation and hard refresh on non-root routes.
+- Update `frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx` to make only Listing ID, Lease Code (UUID), and Split Ratio required user inputs.
+- Remove Location, Area, and Capacity from required validation and from the primary form UI (omit or move into an optional/advanced section that is not required for submission).
+- In the submit handler, automatically supply safe default values for Location/Area/Capacity when not provided (e.g., Location="Unspecified", Area=0, Capacity=0) while preserving user-entered Listing ID, Lease Code, and Split Ratio.
+- Keep inline validation for Lease Code UUID and Split Ratio, with clear English error messages.
 
-**User-visible outcome:** When the app is deployed live, users can navigate to and refresh /listings, /listings/:listingId, /how-it-works, and /dashboard (including typing the URL directly) without seeing a 404, and the correct page loads.
+**User-visible outcome:** Users can create or edit a lease listing from the dashboard by entering only Listing ID, Lease Code, and Split Ratio, without being blocked by missing Location/Area/Capacity.

@@ -23,7 +23,7 @@
   "frontend/src/components/requests/SubmitLeaseRequestForm.tsx": "Form component for authenticated users to submit lease requests with message/contact information.",
   "frontend/src/components/requests/TenantRequestsPanel.tsx": "Dashboard panel displaying the current user's submitted lease requests with status tracking, accessing status enum values directly.",
   "frontend/src/components/dashboard/OwnerOffersPanel.tsx": "Dashboard panel for managing lease listings with create, edit, and archive functionality.",
-  "frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx": "Dialog form for creating/editing lease listings with validation for UUID lease codes and NLO/ULO split ratios, including client-side format validation and error messaging.",
+  "frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx": "Dialog form for creating/editing lease listings with only three required fields (Listing ID, Lease Code UUID, and Split Ratio NLO/ULO), automatically providing safe defaults for location/area/capacity on submit while maintaining client-side validation for UUID format and split ratio format.",
   "frontend/src/components/dashboard/IncomingRequestsPanel.tsx": "Dashboard panel for reviewing and managing incoming lease requests with accept/reject actions, accessing status enum values directly.",
   "frontend/src/index.css": "Global styles with OKLCH color system using emerald as primary accent color in a dark-neutral theme for both light and dark modes.",
   "frontend/tailwind.config.js": "Tailwind configuration with Inter font family, emerald-based color palette, and custom design tokens for consistent styling.",

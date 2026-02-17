@@ -2,10 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-update-the-frontend-routing-strategy-so-the-app-works-reliably-when-deployed-live-on-the-internet-computer-including-direct-navigation-and-browser-refresh-on-non-root-routes-e-g-listings-listings-listingid-how-it-works-dashboard-without-returning-a-404",
-      "featureTitle": "Update the frontend routing strategy so the app works reliably when deployed live on the Internet Computer, including direct navigation and browser refresh on non-root routes (e.g., /listings, /listings/:listingId, /how-it-works, /dashboard) without returning a 404.",
+      "featureId": "feature-update-the-dashboard-create-lease-listing-edit-lease-listing-dialog-frontend-src-components-dashboard-leaseoffereditordialog-tsx-so-the-only-user-input-required-fields-are-listing-id-lease-code-uuid-string-and-split-ratio-nlo-ulo-e-g-60-40-remove-location-area-and-capacity-from-the-required-validation-and-from-the-primary-form-ui-they-may-be-omitted-entirely-or-moved-into-an-optional-advanced-section-that-is-not-required-to-submit",
+      "featureTitle": "Update the Dashboard \"Create Lease Listing\" / \"Edit Lease Listing\" dialog (frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx) so the only user-input required fields are: Listing ID, Lease Code (UUID string), and Split Ratio (NLO/ULO, e.g., 60/40). Remove Location, Area, and Capacity from the required validation and from the primary form UI (they may be omitted entirely or moved into an optional/advanced section that is not required to submit).",
       "files": [
-        "frontend/src/App.tsx"
+        "frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -16,7 +16,26 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-26"
+        "REQ-27"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-ensure-the-dashboard-create-update-listing-mutations-still-send-valid-values-to-the-existing-backend-api-even-when-location-area-capacity-are-not-entered-by-the-user-by-automatically-supplying-safe-defaults-in-the-dialog-submit-handler-e-g-location-unspecified-area-0-capacity-0-while-preserving-the-user-entered-listing-id-lease-code-and-split-ratio",
+      "featureTitle": "Ensure the dashboard create/update listing mutations still send valid values to the existing backend API even when Location/Area/Capacity are not entered by the user, by automatically supplying safe defaults in the dialog submit handler (e.g., Location=\"Unspecified\", Area=0, Capacity=0) while preserving the user-entered Listing ID, Lease Code, and Split Ratio.",
+      "files": [
+        "frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-28"
       ],
       "confidence": "high"
     }

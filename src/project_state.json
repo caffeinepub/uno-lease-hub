@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 21,
+  "projectStateVersion": 23,
   "summary": "Plan a custom, mobile-compatible website running on the ICP blockchain for UNO/ULO lease listings and lease-code distribution, using unitynodes.club as UI inspiration but aligning product/content guidance with https://unitynodes.io (Unity mobile app is not ICP-powered). The site should clearly communicate there is a single UNO/admin offering ULO lease codes, and ULO users only browse listings and copy lease codes for use in the Unity App (no additional ULO functionality).",
   "architectural_notes": [
     "Target deployment/runtime: ICP blockchain (Internet Computer).",
@@ -17,9 +17,10 @@
   "known_issues": [
     "Safety system may block sharing of the user's Internet Identity principal, preventing configuration of single-admin allowlist via chat.",
     "Build/deploy action to 'make the site live' intermittently fails with an error ('AI couldn't process your request successfully').",
-    "Draft environment may fail to load some images and YouTube embeds, causing media not to appear in draft previews."
+    "Draft environment may fail to load some images and YouTube embeds, causing media not to appear in draft previews.",
+    "User reports being unable to log in to the site via Internet Identity (II sign-in flow not completing)."
   ],
-  "isFixRequest": false,
+  "isFixRequest": true,
   "existing_features": [
     {
       "id": "feature-create-a-public-facing-website-ui-inspired-by-https-unitynodes-club-layout-and-interaction-patterns-but-implemented-as-a-standalone-react-app-running-on-the-internet-computer",
@@ -212,6 +213,22 @@
         "REQ-26"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-update-the-dashboard-create-lease-listing-edit-lease-listing-dialog-frontend-src-components-dashboard-leaseoffereditordialog-tsx-so-the-only-user-input-required-fields-are-listing-id-lease-code-uuid-string-and-split-ratio-nlo-ulo-e-g-60-40-remove-location-area-and-capacity-from-the-required-validation-and-from-the-primary-form-ui-they-may-be-omitted-entirely-or-moved-into-an-optional-advanced-section-that-is-not-required-to-submit",
+      "title": "Update the Dashboard \"Create Lease Listing\" / \"Edit Lease Listing\" dialog (frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx) so the only user-input required fields are: Listing ID, Lease Code (UUID string), and Split Ratio (NLO/ULO, e.g., 60/40). Remove Location, Area, and Capacity from the required validation and from the primary form UI (they may be omitted entirely or moved into an optional/advanced section that is not required to submit).",
+      "reqIds": [
+        "REQ-27"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-the-dashboard-create-update-listing-mutations-still-send-valid-values-to-the-existing-backend-api-even-when-location-area-capacity-are-not-entered-by-the-user-by-automatically-supplying-safe-defaults-in-the-dialog-submit-handler-e-g-location-unspecified-area-0-capacity-0-while-preserving-the-user-entered-listing-id-lease-code-and-split-ratio",
+      "title": "Ensure the dashboard create/update listing mutations still send valid values to the existing backend API even when Location/Area/Capacity are not entered by the user, by automatically supplying safe defaults in the dialog submit handler (e.g., Location=\"Unspecified\", Area=0, Capacity=0) while preserving the user-entered Listing ID, Lease Code, and Split Ratio.",
+      "reqIds": [
+        "REQ-28"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -306,6 +323,12 @@
     {
       "id": "AR-17",
       "summary": "Remove the \"For Unity Node Operators (UNOs)\" section and its associated UNO/dashboard promotional copy from the How It Works page",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-18",
+      "summary": "Simplify UNO dashboard 'Create Lease Listing' form so only required fields are Listing ID, Lease Code (UUID), and Split Ratio",
       "reqIds": [],
       "status": "pending"
     }

@@ -1,31 +1,37 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "UNO Lease Hub — ICP-safe SPA routing for reliable production navigation",
+  "title": "Simplify Dashboard Lease Listing Editor Required Fields",
   "requirements": [
     {
-      "id": "REQ-26",
-      "summary": "Make client-side routing resilient on the Internet Computer for direct URL entry and refresh on non-root routes without user-visible 404s.",
+      "id": "REQ-27",
+      "summary": "Simplify the Create/Edit Lease Listing dialog so only Listing ID, Lease Code, and Split Ratio are required, and remove Location/Area/Capacity from the primary required UI/validation.",
       "acceptanceCriteria": [
-        "When deployed live, visiting the home page and navigating via links to /listings, /listings/$listingId, /how-it-works, and /dashboard works as expected.",
-        "When deployed live, manually entering each route URL in the browser address bar and pressing Enter loads the correct page (no 404).",
-        "When deployed live, refreshing the browser (hard refresh) on each of the routes listed above loads the correct page (no 404)."
+        "Creating a listing from the dashboard succeeds when only Listing ID + Lease Code + Split Ratio are provided by the user (no Location/Area/Capacity input required).",
+        "The form no longer blocks submission with the error \"Please fill in all required fields\" due to missing Location/Area/Capacity.",
+        "User-facing labels and helper text remain in English."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/App.tsx",
+          "path": "frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx",
           "operation": "modify",
-          "description": "Update TanStack Router configuration to use an ICP-safe routing strategy (hash-based history or equivalent) so in-app navigation remains stable even when the hosting layer cannot rewrite unknown paths to the SPA entry file."
-        },
+          "description": "Update the dialog form to make Listing ID, Lease Code (UUID), and Split Ratio (NLO/ULO) the only required user inputs; remove Location/Area/Capacity from the primary form UI and from the required-field validation (optionally place them into a clearly-labeled optional/advanced section that does not affect submit eligibility). Update labels/helper text so Lease Code and Split Ratio are no longer marked optional, and ensure the generic required-fields toast is no longer triggered by missing Location/Area/Capacity."
+        }
+      ]
+    },
+    {
+      "id": "REQ-28",
+      "summary": "On submit, automatically supply safe defaults for Location/Area/Capacity so create/update calls remain valid without user entry, while keeping UUID and split ratio validation.",
+      "acceptanceCriteria": [
+        "Submitting the simplified form calls the existing actor methods (createLeaseListing/updateLeaseListing) without backend validation/trap errors due to missing Location/Area/Capacity.",
+        "Lease Code UUID validation still works (invalid UUIDs are rejected with a clear inline error).",
+        "Split Ratio validation still works (invalid ratios are rejected with a clear inline error)."
+      ],
+      "file_operations": [
         {
-          "path": "frontend/public/404.html",
-          "operation": "create",
-          "description": "Add an SPA fallback page that captures deep-link requests to non-root paths and redirects the browser into the app’s router (preserving the original path/query) so direct navigation and refresh on routes like /listings, /listings/:listingId, /how-it-works, and /dashboard render the correct view instead of a user-visible 404."
-        },
-        {
-          "path": "frontend/index.html",
+          "path": "frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx",
           "operation": "modify",
-          "description": "Ensure the app entry HTML remains compatible with the chosen ICP-safe routing approach (no changes to frontend/src/main.tsx), and confirm the deployed build serves the SPA entry correctly alongside the 404 fallback behavior."
+          "description": "Adjust submit handler to (1) require and validate Lease Code as a UUID with inline error, (2) require and validate Split Ratio with inline error, and (3) when Location/Area/Capacity are blank, automatically pass safe defaults to mutations (e.g., location=\"Unspecified\", area=0n, capacity=0n) while preserving user-entered Listing ID, Lease Code, and Split Ratio; ensure the mutations still receive valid types (BigInt for area/capacity, and non-null code/splitRatio when required)."
         }
       ]
     }
