@@ -15,6 +15,8 @@ export interface LeaseListing {
   'status' : LeaseStatus,
   'owner' : Principal,
   'area' : bigint,
+  'code' : [] | [string],
+  'splitRatio' : [] | [SplitRatio],
   'capacity' : bigint,
   'location' : string,
 }
@@ -31,6 +33,7 @@ export interface LeaseRequest {
 }
 export type LeaseStatus = { 'active' : null } |
   { 'archived' : null };
+export interface SplitRatio { 'nlo' : bigint, 'ulo' : bigint }
 export type Time = bigint;
 export interface UserProfile { 'name' : string }
 export type UserRole = { 'admin' : null } |
@@ -40,7 +43,10 @@ export interface _SERVICE {
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
   'archiveLeaseListing' : ActorMethod<[string], undefined>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
-  'createLeaseListing' : ActorMethod<[string, string, bigint, bigint], string>,
+  'createLeaseListing' : ActorMethod<
+    [string, string, bigint, bigint, [] | [string], [] | [SplitRatio]],
+    string
+  >,
   'getActiveListings' : ActorMethod<[], Array<LeaseListing>>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
@@ -53,7 +59,7 @@ export interface _SERVICE {
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
   'submitLeaseRequest' : ActorMethod<[string, string], string>,
   'updateLeaseListing' : ActorMethod<
-    [string, string, bigint, bigint],
+    [string, string, bigint, bigint, [] | [string], [] | [SplitRatio]],
     undefined
   >,
   'updateRequestStatus' : ActorMethod<

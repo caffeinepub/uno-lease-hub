@@ -7,6 +7,10 @@ export interface None {
     __kind__: "None";
 }
 export type Option<T> = Some<T> | None;
+export interface SplitRatio {
+    nlo: bigint;
+    ulo: bigint;
+}
 export interface LeaseRequest {
     id: string;
     status: Variant_cancelled_pending_rejected_accepted;
@@ -24,6 +28,8 @@ export interface LeaseListing {
     status: LeaseStatus;
     owner: Principal;
     area: bigint;
+    code?: string;
+    splitRatio?: SplitRatio;
     capacity: bigint;
     location: string;
 }
@@ -49,7 +55,7 @@ export enum Variant_rejected_accepted {
 export interface backendInterface {
     archiveLeaseListing(id: string): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
-    createLeaseListing(id: string, location: string, area: bigint, capacity: bigint): Promise<string>;
+    createLeaseListing(id: string, location: string, area: bigint, capacity: bigint, code: string | null, splitRatio: SplitRatio | null): Promise<string>;
     getActiveListings(): Promise<Array<LeaseListing>>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
@@ -61,6 +67,6 @@ export interface backendInterface {
     isCallerAdmin(): Promise<boolean>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
     submitLeaseRequest(listingId: string, info: string): Promise<string>;
-    updateLeaseListing(id: string, location: string, area: bigint, capacity: bigint): Promise<void>;
+    updateLeaseListing(id: string, location: string, area: bigint, capacity: bigint, code: string | null, splitRatio: SplitRatio | null): Promise<void>;
     updateRequestStatus(requestId: string, newStatus: Variant_rejected_accepted): Promise<void>;
 }

@@ -1,4 +1,4 @@
-import { createRouter, createRoute, createRootRoute, RouterProvider, Outlet } from '@tanstack/react-router';
+import { createRouter, createRoute, createRootRoute, RouterProvider, Outlet, createHashHistory } from '@tanstack/react-router';
 import { ThemeProvider } from 'next-themes';
 import { Toaster } from '@/components/ui/sonner';
 import AppLayout from './components/layout/AppLayout';
@@ -69,8 +69,14 @@ const routeTree = rootRoute.addChildren([
   notFoundRoute,
 ]);
 
-// Create router
-const router = createRouter({ routeTree });
+// Create hash history for ICP compatibility
+const hashHistory = createHashHistory();
+
+// Create router with hash history
+const router = createRouter({ 
+  routeTree,
+  history: hashHistory,
+});
 
 // Register router for type safety
 declare module '@tanstack/react-router' {

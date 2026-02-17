@@ -1,7 +1,7 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-17T02:41:35.289Z",
+  "generatedAt": "2026-02-17T03:12:51.663Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
@@ -11,14 +11,16 @@
     "implemented": 1,
     "items": [
       {
-        "id": "REQ-21",
-        "summary": "Remove the \"List Your Lease\" call-to-action from the Home/Landing page hero section so the Home page no longer offers a direct \"List Your Lease\" path to the dashboard.",
+        "id": "REQ-26",
+        "summary": "Update the frontend routing strategy so the app works reliably when deployed live on the Internet Computer, including direct navigation and browser refresh on non-root routes (e.g., /listings, /listings/:listingId, /how-it-works, /dashboard) without returning a 404.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/pages/LandingPage.tsx"
+          "frontend/src/App.tsx",
+          "frontend/public/404.html",
+          "frontend/index.html"
         ],
         "matchedFiles": [
-          "frontend/src/pages/LandingPage.tsx"
+          "frontend/src/App.tsx"
         ]
       }
     ]
@@ -28,7 +30,7 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/pages/LandingPage.tsx",
+    "frontend/src/App.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

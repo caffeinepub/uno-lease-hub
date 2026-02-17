@@ -2,10 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-remove-the-list-your-lease-call-to-action-from-the-home-landing-page-hero-section-so-the-home-page-no-longer-offers-a-direct-list-your-lease-path-to-the-dashboard",
-      "featureTitle": "Remove the \"List Your Lease\" call-to-action from the Home/Landing page hero section so the Home page no longer offers a direct \"List Your Lease\" path to the dashboard.",
+      "featureId": "feature-update-the-frontend-routing-strategy-so-the-app-works-reliably-when-deployed-live-on-the-internet-computer-including-direct-navigation-and-browser-refresh-on-non-root-routes-e-g-listings-listings-listingid-how-it-works-dashboard-without-returning-a-404",
+      "featureTitle": "Update the frontend routing strategy so the app works reliably when deployed live on the Internet Computer, including direct navigation and browser refresh on non-root routes (e.g., /listings, /listings/:listingId, /how-it-works, /dashboard) without returning a 404.",
       "files": [
-        "frontend/src/pages/LandingPage.tsx"
+        "frontend/src/App.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -16,7 +16,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-21"
+        "REQ-26"
       ],
       "confidence": "high"
     }

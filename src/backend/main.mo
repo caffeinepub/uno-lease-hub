@@ -9,9 +9,16 @@ import Principal "mo:core/Principal";
 import MixinAuthorization "authorization/MixinAuthorization";
 import AccessControl "authorization/access-control";
 
+
+
 actor {
-  // ==== Types ====
+  // ==== Types ====  
   public type LeaseStatus = { #active; #archived };
+
+  public type SplitRatio = {
+    nlo : Nat;
+    ulo : Nat;
+  };
 
   public type LeaseListing = {
     id : Text;
@@ -20,6 +27,8 @@ actor {
     capacity : Nat;
     status : LeaseStatus;
     owner : Principal;
+    code : ?Text;
+    splitRatio : ?SplitRatio;
   };
 
   public type LeaseRequest = {
@@ -84,6 +93,8 @@ actor {
     location : Text,
     area : Nat,
     capacity : Nat,
+    code : ?Text,
+    splitRatio : ?SplitRatio,
   ) : async Text {
     if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
       Runtime.trap("Unauthorized: Only users can create lease listings");
@@ -96,6 +107,8 @@ actor {
       capacity;
       status = #active;
       owner = caller;
+      code;
+      splitRatio;
     };
 
     leaseListings.add(id, listing);
@@ -119,6 +132,8 @@ actor {
     location : Text,
     area : Nat,
     capacity : Nat,
+    code : ?Text,
+    splitRatio : ?SplitRatio,
   ) : async () {
     if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
       Runtime.trap("Unauthorized: Only users can update listings");
@@ -136,6 +151,8 @@ actor {
           location;
           area;
           capacity;
+          code;
+          splitRatio;
         };
         leaseListings.add(id, updatedListing);
       };

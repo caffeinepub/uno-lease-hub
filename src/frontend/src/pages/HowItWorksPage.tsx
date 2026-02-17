@@ -1,5 +1,4 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Link } from '@tanstack/react-router';
 import { Search, Copy, Smartphone, ExternalLink, AlertCircle, HelpCircle } from 'lucide-react';
 import YouTubeShortsSection from '../components/media/YouTubeShortsSection';
@@ -246,44 +245,6 @@ export default function HowItWorksPage() {
 
       {/* Instructional Videos Section */}
       <YouTubeShortsSection />
-
-      {/* For UNO Providers */}
-      <Card className="border-emerald-500/20 bg-emerald-500/5 mt-12 sm:mt-16">
-        <CardHeader className="text-center">
-          <CardTitle className="text-xl sm:text-2xl">For Unity Node Operators (UNOs)</CardTitle>
-          <CardDescription className="text-sm sm:text-base">
-            List your available ULO lease codes and manage your offerings
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-sm sm:text-base text-muted-foreground text-center">
-            If you operate Unity Node infrastructure, you can use this platform to offer ULO lease codes to the community. Sign in with Internet Identity to get started.
-          </p>
-          <ul className="space-y-3 text-sm sm:text-base text-muted-foreground">
-            <li className="flex items-start gap-3">
-              <Copy className="mt-0.5 h-5 w-5 flex-shrink-0 text-emerald-500" />
-              <span>Create detailed listings with location, area, and capacity information</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <Copy className="mt-0.5 h-5 w-5 flex-shrink-0 text-emerald-500" />
-              <span>Generate and manage unique lease codes for your Unity Node capacity</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <Copy className="mt-0.5 h-5 w-5 flex-shrink-0 text-emerald-500" />
-              <span>Update or archive listings anytime from your dashboard</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <Copy className="mt-0.5 h-5 w-5 flex-shrink-0 text-emerald-500" />
-              <span>Full control over your lease code offerings on the ICP blockchain</span>
-            </li>
-          </ul>
-          <div className="pt-4 text-center">
-            <Button asChild size="lg" className="w-full sm:w-auto">
-              <Link to="/dashboard">Go to Dashboard</Link>
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }

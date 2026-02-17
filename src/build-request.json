@@ -1,36 +1,39 @@
 {
   "kind": "build_request",
-  "title": "Remove “List Your Lease” CTA from Home page",
+  "title": "Make production deployment reliable by using ICP-safe routing",
   "projectName": "UNO Lease Hub",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-21",
-      "text": "Remove the \"List Your Lease\" call-to-action from the Home/Landing page hero section so the Home page no longer offers a direct \"List Your Lease\" path to the dashboard.",
+      "id": "REQ-26",
+      "text": "Update the frontend routing strategy so the app works reliably when deployed live on the Internet Computer, including direct navigation and browser refresh on non-root routes (e.g., /listings, /listings/:listingId, /how-it-works, /dashboard) without returning a 404.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-4"
+          "msg-4",
+          "msg-5"
         ],
         "quotes": [
-          "remove the list your lease on the home page"
+          "try going live",
+          "Got it — starting the build now."
         ]
       },
       "acceptanceCriteria": [
-        "On the Home page (frontend/src/pages/LandingPage.tsx), the hero CTA row no longer contains a button/link with the label \"List Your Lease\".",
-        "The remaining hero CTA(s) (e.g., \"Browse Available Leases\") remain visually aligned and responsive on mobile and desktop.",
-        "No other pages/routes are removed or changed as part of this update."
+        "When deployed live, visiting the home page and navigating via links to /listings, /listings/$listingId, /how-it-works, and /dashboard works as expected.",
+        "When deployed live, manually entering each route URL in the browser address bar and pressing Enter loads the correct page (no 404).",
+        "When deployed live, refreshing the browser (hard refresh) on each of the routes listed above loads the correct page (no 404)."
       ]
     }
   ],
   "constraints": [
-    "Frontend immutable paths must not be edited: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui (compose only).",
-    "Keep all user-facing text in English."
+    "Backend must remain a single Motoko actor in backend/main.mo; only add backend migration if persistent state changes require it.",
+    "Do not edit frontend immutable paths: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui.",
+    "Use English for any user-facing text."
   ],
   "nonGoals": [
-    "Do not remove or disable the /dashboard route or any dashboard functionality.",
-    "Do not change backend logic, data models, or access control.",
-    "Do not add new marketing sections or redesign the Landing page beyond removing the specified CTA."
+    "Adding new product features beyond deployment/routing reliability.",
+    "Changing authentication providers (Internet Identity remains the only auth).",
+    "Introducing external databases, servers, or third-party hosting/deployment services."
   ],
   "imageRequirements": {
     "required": [],

@@ -1,21 +1,31 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Remove “List Your Lease” CTA from Home page",
+  "title": "UNO Lease Hub — ICP-safe SPA routing for reliable production navigation",
   "requirements": [
     {
-      "id": "REQ-21",
-      "summary": "Remove the \"List Your Lease\" hero call-to-action from the Landing page while keeping remaining hero CTA alignment responsive and leaving all other routes unchanged.",
+      "id": "REQ-26",
+      "summary": "Make client-side routing resilient on the Internet Computer for direct URL entry and refresh on non-root routes without user-visible 404s.",
       "acceptanceCriteria": [
-        "On the Home page (frontend/src/pages/LandingPage.tsx), the hero CTA row no longer contains a button/link with the label \"List Your Lease\".",
-        "The remaining hero CTA(s) (e.g., \"Browse Available Leases\") remain visually aligned and responsive on mobile and desktop.",
-        "No other pages/routes are removed or changed as part of this update."
+        "When deployed live, visiting the home page and navigating via links to /listings, /listings/$listingId, /how-it-works, and /dashboard works as expected.",
+        "When deployed live, manually entering each route URL in the browser address bar and pressing Enter loads the correct page (no 404).",
+        "When deployed live, refreshing the browser (hard refresh) on each of the routes listed above loads the correct page (no 404)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/LandingPage.tsx",
+          "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Update the hero CTA row to remove the secondary Button/Link that navigates to \"/dashboard\" with label \"List Your Lease\". Keep the remaining CTA(s) using the existing shadcn-ui Button component for consistent styling and ensure the flex layout remains centered/aligned across breakpoints after removing one item. Verify the component's usage instructions before implementing."
+          "description": "Update TanStack Router configuration to use an ICP-safe routing strategy (hash-based history or equivalent) so in-app navigation remains stable even when the hosting layer cannot rewrite unknown paths to the SPA entry file."
+        },
+        {
+          "path": "frontend/public/404.html",
+          "operation": "create",
+          "description": "Add an SPA fallback page that captures deep-link requests to non-root paths and redirects the browser into the app’s router (preserving the original path/query) so direct navigation and refresh on routes like /listings, /listings/:listingId, /how-it-works, and /dashboard render the correct view instead of a user-visible 404."
+        },
+        {
+          "path": "frontend/index.html",
+          "operation": "modify",
+          "description": "Ensure the app entry HTML remains compatible with the chosen ICP-safe routing approach (no changes to frontend/src/main.tsx), and confirm the deployed build serves the SPA entry correctly alongside the 404 fallback behavior."
         }
       ]
     }

@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 15,
+  "projectStateVersion": 21,
   "summary": "Plan a custom, mobile-compatible website running on the ICP blockchain for UNO/ULO lease listings and lease-code distribution, using unitynodes.club as UI inspiration but aligning product/content guidance with https://unitynodes.io (Unity mobile app is not ICP-powered). The site should clearly communicate there is a single UNO/admin offering ULO lease codes, and ULO users only browse listings and copy lease codes for use in the Unity App (no additional ULO functionality).",
   "architectural_notes": [
     "Target deployment/runtime: ICP blockchain (Internet Computer).",
@@ -180,6 +180,38 @@
         "REQ-21"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-update-the-authenticated-uno-dashboard-lease-listing-editor-ui-to-allow-entering-and-editing-1-the-lease-code-uuid-string-and-2-the-split-ratio-in-nlo-ulo-format-e-g-60-40-and-pass-these-values-through-the-existing-create-update-listing-mutations-to-the-backend",
+      "title": "Update the authenticated UNO dashboard lease listing editor UI to allow entering and editing (1) the lease code UUID string and (2) the split ratio in \"NLO/ULO\" format (e.g., \"60/40\"), and pass these values through the existing create/update listing mutations to the backend.",
+      "reqIds": [
+        "REQ-23"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-display-the-lease-code-and-split-ratio-on-the-public-lease-details-page-in-a-clear-english-presentation-that-explicitly-attributes-the-first-split-value-to-nlo-and-the-second-split-value-to-ulo",
+      "title": "Display the lease code and split ratio on the public Lease Details page in a clear English presentation that explicitly attributes the first split value to NLO and the second split value to ULO.",
+      "reqIds": [
+        "REQ-24"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-remove-the-entire-for-unity-node-operators-unos-promotional-section-from-the-how-it-works-page-frontend-src-pages-howitworkspage-tsx-including-its-heading-description-paragraph-bullet-list-and-the-go-to-dashboard-button-link-so-this-uno-dashboard-call-to-action-no-longer-appears-on-the-page",
+      "title": "Remove the entire \"For Unity Node Operators (UNOs)\" promotional section from the How It Works page (frontend/src/pages/HowItWorksPage.tsx), including its heading, description, paragraph, bullet list, and the \"Go to Dashboard\" button/link, so this UNO/dashboard call-to-action no longer appears on the page.",
+      "reqIds": [
+        "REQ-25"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-frontend-routing-strategy-so-the-app-works-reliably-when-deployed-live-on-the-internet-computer-including-direct-navigation-and-browser-refresh-on-non-root-routes-e-g-listings-listings-listingid-how-it-works-dashboard-without-returning-a-404",
+      "title": "Update the frontend routing strategy so the app works reliably when deployed live on the Internet Computer, including direct navigation and browser refresh on non-root routes (e.g., /listings, /listings/:listingId, /how-it-works, /dashboard) without returning a 404.",
+      "reqIds": [
+        "REQ-26"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -254,6 +286,26 @@
     {
       "id": "AR-14",
       "summary": "Remove the \"List your lease\" call-to-action/section from the Home (Landing) page",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-15",
+      "summary": "Support backend storage/ingestion of lease codes as UUID strings with an associated split ratio (e.g., 60/40) and clear attribution (first value to NLO, second to ULO)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-16",
+      "summary": "Update the backend lease listing data model and Candid API to support storing a lease code as a UUID string (e.g., \"2793ff69-b468-4342-b3cd-3956a4822003\") together with a split ratio expressed as two numeric parts (e.g., \"60/40\"), where the first value is attributed to NLO and the second value is attributed to ULO.",
+      "reqIds": [
+        "REQ-22"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-17",
+      "summary": "Remove the \"For Unity Node Operators (UNOs)\" section and its associated UNO/dashboard promotional copy from the How It Works page",
       "reqIds": [],
       "status": "pending"
     }

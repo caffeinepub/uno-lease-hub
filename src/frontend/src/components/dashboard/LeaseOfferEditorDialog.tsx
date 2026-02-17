@@ -29,6 +29,12 @@ export default function LeaseOfferEditorDialog({ open, onOpenChange, listing }: 
     location: '',
     area: '',
     capacity: '',
+    code: '',
+    splitRatio: '',
+  });
+  const [errors, setErrors] = useState({
+    code: '',
+    splitRatio: '',
   });
 
   const isEditing = !!listing;
@@ -40,6 +46,8 @@ export default function LeaseOfferEditorDialog({ open, onOpenChange, listing }: 
         location: listing.location,
         area: listing.area.toString(),
         capacity: listing.capacity.toString(),
+        code: listing.code || '',
+        splitRatio: listing.splitRatio ? `${listing.splitRatio.nlo}/${listing.splitRatio.ulo}` : '',
       });
     } else {
       setFormData({
@@ -47,24 +55,81 @@ export default function LeaseOfferEditorDialog({ open, onOpenChange, listing }: 
         location: '',
         area: '',
         capacity: '',
+        code: '',
+        splitRatio: '',
       });
     }
+    setErrors({ code: '', splitRatio: '' });
   }, [listing, open]);
+
+  const validateUUID = (uuid: string): boolean => {
+    if (!uuid.trim()) return true; // Optional field
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    return uuidRegex.test(uuid);
+  };
+
+  const validateSplitRatio = (ratio: string): boolean => {
+    if (!ratio.trim()) return true; // Optional field
+    const splitRegex = /^(\d+)\/(\d+)$/;
+    const match = ratio.match(splitRegex);
+    if (!match) return false;
+    const nlo = parseInt(match[1], 10);
+    const ulo = parseInt(match[2], 10);
+    return !isNaN(nlo) && !isNaN(ulo) && nlo >= 0 && ulo >= 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Reset errors
+    setErrors({ code: '', splitRatio: '' });
+
+    // Basic validation
     if (!formData.id.trim() || !formData.location.trim() || !formData.area || !formData.capacity) {
-      toast.error('Please fill in all fields');
+      toast.error('Please fill in all required fields');
+      return;
+    }
+
+    // Validate lease code (UUID)
+    if (formData.code.trim() && !validateUUID(formData.code.trim())) {
+      setErrors((prev) => ({
+        ...prev,
+        code: 'Invalid UUID format. Expected format: 8-4-4-4-12 hex characters with hyphens (e.g., 2793ff69-b468-4342-b3cd-3956a4822003)',
+      }));
+      toast.error('Invalid lease code format');
+      return;
+    }
+
+    // Validate split ratio
+    if (formData.splitRatio.trim() && !validateSplitRatio(formData.splitRatio.trim())) {
+      setErrors((prev) => ({
+        ...prev,
+        splitRatio: 'Invalid split ratio format. Expected format: NN/NN (e.g., 60/40)',
+      }));
+      toast.error('Invalid split ratio format');
       return;
     }
 
     try {
+      // Parse split ratio if provided
+      let splitRatio: { nlo: bigint; ulo: bigint } | null = null;
+      if (formData.splitRatio.trim()) {
+        const match = formData.splitRatio.match(/^(\d+)\/(\d+)$/);
+        if (match) {
+          splitRatio = {
+            nlo: BigInt(match[1]),
+            ulo: BigInt(match[2]),
+          };
+        }
+      }
+
       const data = {
         id: formData.id.trim(),
         location: formData.location.trim(),
         area: BigInt(formData.area),
         capacity: BigInt(formData.capacity),
+        code: formData.code.trim() || null,
+        splitRatio,
       };
 
       if (isEditing) {
@@ -84,7 +149,7 @@ export default function LeaseOfferEditorDialog({ open, onOpenChange, listing }: 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{isEditing ? 'Edit Lease Listing' : 'Create Lease Listing'}</DialogTitle>
           <DialogDescription>
@@ -133,6 +198,38 @@ export default function LeaseOfferEditorDialog({ open, onOpenChange, listing }: 
               onChange={(e) => setFormData({ ...formData, capacity: e.target.value })}
               disabled={isPending}
             />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="code">Lease Code (UUID)</Label>
+            <Input
+              id="code"
+              placeholder="e.g., 2793ff69-b468-4342-b3cd-3956a4822003"
+              value={formData.code}
+              onChange={(e) => {
+                setFormData({ ...formData, code: e.target.value });
+                setErrors({ ...errors, code: '' });
+              }}
+              disabled={isPending}
+              className={errors.code ? 'border-destructive' : ''}
+            />
+            {errors.code && <p className="text-xs text-destructive">{errors.code}</p>}
+            <p className="text-xs text-muted-foreground">Optional. Format: 8-4-4-4-12 hex characters with hyphens</p>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="splitRatio">Split Ratio (NLO/ULO)</Label>
+            <Input
+              id="splitRatio"
+              placeholder="e.g., 60/40"
+              value={formData.splitRatio}
+              onChange={(e) => {
+                setFormData({ ...formData, splitRatio: e.target.value });
+                setErrors({ ...errors, splitRatio: '' });
+              }}
+              disabled={isPending}
+              className={errors.splitRatio ? 'border-destructive' : ''}
+            />
+            {errors.splitRatio && <p className="text-xs text-destructive">{errors.splitRatio}</p>}
+            <p className="text-xs text-muted-foreground">Optional. Format: NN/NN (first number goes to NLO, second to ULO)</p>
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isPending}>

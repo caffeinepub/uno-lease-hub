@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import SubmitLeaseRequestForm from '../components/requests/SubmitLeaseRequestForm';
-import { MapPin, Square, Users, ArrowLeft } from 'lucide-react';
+import { MapPin, Square, Users, ArrowLeft, FileCode, Split } from 'lucide-react';
 
 export default function LeaseDetailsPage() {
   const { listingId } = useParams({ from: '/listings/$listingId' });
@@ -120,6 +120,40 @@ export default function LeaseDetailsPage() {
                   </div>
                 </div>
               </div>
+
+              {(listing.code || listing.splitRatio) && (
+                <>
+                  <Separator />
+                  <div className="space-y-4">
+                    {listing.code && (
+                      <div className="flex items-start gap-3">
+                        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-emerald-500/10">
+                          <FileCode className="h-5 w-5 text-emerald-500" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-1">Lease Code</p>
+                          <div className="rounded-lg bg-muted p-3 sm:p-4">
+                            <code className="text-xs sm:text-sm break-all font-mono text-foreground">{listing.code}</code>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    {listing.splitRatio && (
+                      <div className="flex items-start gap-3">
+                        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-emerald-500/10">
+                          <Split className="h-5 w-5 text-emerald-500" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-xs sm:text-sm font-medium text-muted-foreground">Split Ratio</p>
+                          <p className="text-sm sm:text-base font-semibold text-foreground">
+                            NLO {listing.splitRatio.nlo.toString()} / ULO {listing.splitRatio.ulo.toString()}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
 
               <Separator />
 

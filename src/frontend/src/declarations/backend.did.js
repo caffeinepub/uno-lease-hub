@@ -13,6 +13,7 @@ export const UserRole = IDL.Variant({
   'user' : IDL.Null,
   'guest' : IDL.Null,
 });
+export const SplitRatio = IDL.Record({ 'nlo' : IDL.Nat, 'ulo' : IDL.Nat });
 export const LeaseStatus = IDL.Variant({
   'active' : IDL.Null,
   'archived' : IDL.Null,
@@ -22,6 +23,8 @@ export const LeaseListing = IDL.Record({
   'status' : LeaseStatus,
   'owner' : IDL.Principal,
   'area' : IDL.Nat,
+  'code' : IDL.Opt(IDL.Text),
+  'splitRatio' : IDL.Opt(SplitRatio),
   'capacity' : IDL.Nat,
   'location' : IDL.Text,
 });
@@ -46,7 +49,14 @@ export const idlService = IDL.Service({
   'archiveLeaseListing' : IDL.Func([IDL.Text], [], []),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
   'createLeaseListing' : IDL.Func(
-      [IDL.Text, IDL.Text, IDL.Nat, IDL.Nat],
+      [
+        IDL.Text,
+        IDL.Text,
+        IDL.Nat,
+        IDL.Nat,
+        IDL.Opt(IDL.Text),
+        IDL.Opt(SplitRatio),
+      ],
       [IDL.Text],
       [],
     ),
@@ -70,7 +80,14 @@ export const idlService = IDL.Service({
   'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
   'submitLeaseRequest' : IDL.Func([IDL.Text, IDL.Text], [IDL.Text], []),
   'updateLeaseListing' : IDL.Func(
-      [IDL.Text, IDL.Text, IDL.Nat, IDL.Nat],
+      [
+        IDL.Text,
+        IDL.Text,
+        IDL.Nat,
+        IDL.Nat,
+        IDL.Opt(IDL.Text),
+        IDL.Opt(SplitRatio),
+      ],
       [],
       [],
     ),
@@ -89,6 +106,7 @@ export const idlFactory = ({ IDL }) => {
     'user' : IDL.Null,
     'guest' : IDL.Null,
   });
+  const SplitRatio = IDL.Record({ 'nlo' : IDL.Nat, 'ulo' : IDL.Nat });
   const LeaseStatus = IDL.Variant({
     'active' : IDL.Null,
     'archived' : IDL.Null,
@@ -98,6 +116,8 @@ export const idlFactory = ({ IDL }) => {
     'status' : LeaseStatus,
     'owner' : IDL.Principal,
     'area' : IDL.Nat,
+    'code' : IDL.Opt(IDL.Text),
+    'splitRatio' : IDL.Opt(SplitRatio),
     'capacity' : IDL.Nat,
     'location' : IDL.Text,
   });
@@ -122,7 +142,14 @@ export const idlFactory = ({ IDL }) => {
     'archiveLeaseListing' : IDL.Func([IDL.Text], [], []),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
     'createLeaseListing' : IDL.Func(
-        [IDL.Text, IDL.Text, IDL.Nat, IDL.Nat],
+        [
+          IDL.Text,
+          IDL.Text,
+          IDL.Nat,
+          IDL.Nat,
+          IDL.Opt(IDL.Text),
+          IDL.Opt(SplitRatio),
+        ],
         [IDL.Text],
         [],
       ),
@@ -146,7 +173,14 @@ export const idlFactory = ({ IDL }) => {
     'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
     'submitLeaseRequest' : IDL.Func([IDL.Text, IDL.Text], [IDL.Text], []),
     'updateLeaseListing' : IDL.Func(
-        [IDL.Text, IDL.Text, IDL.Nat, IDL.Nat],
+        [
+          IDL.Text,
+          IDL.Text,
+          IDL.Nat,
+          IDL.Nat,
+          IDL.Opt(IDL.Text),
+          IDL.Opt(SplitRatio),
+        ],
         [],
         [],
       ),
