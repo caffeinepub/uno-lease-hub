@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useCreateLeaseListing, useUpdateLeaseListing } from '../../hooks/useOwnerDashboard';
+import { useCreateLeaseListing, useUpdateLeaseListing, useUpdateLeaseAvailability } from '../../hooks/useOwnerDashboard';
 import {
   Dialog,
   DialogContent,
@@ -11,9 +11,17 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-import type { LeaseListing } from '../../backend';
+import type { LeaseListing, LeaseStatus } from '../../backend';
+import { LeaseStatus as LeaseStatusEnum } from '../../backend';
 
 interface LeaseOfferEditorDialogProps {
   open: boolean;
@@ -24,10 +32,12 @@ interface LeaseOfferEditorDialogProps {
 export default function LeaseOfferEditorDialog({ open, onOpenChange, listing }: LeaseOfferEditorDialogProps) {
   const createListing = useCreateLeaseListing();
   const updateListing = useUpdateLeaseListing();
+  const updateAvailability = useUpdateLeaseAvailability();
   const [formData, setFormData] = useState({
     id: '',
     code: '',
     splitRatio: '',
+    availability: LeaseStatusEnum.available as LeaseStatus,
   });
   const [errors, setErrors] = useState({
     code: '',
@@ -42,12 +52,14 @@ export default function LeaseOfferEditorDialog({ open, onOpenChange, listing }: 
         id: listing.id,
         code: listing.code || '',
         splitRatio: listing.splitRatio ? `${listing.splitRatio.nlo}/${listing.splitRatio.ulo}` : '',
+        availability: listing.status,
       });
     } else {
       setFormData({
         id: '',
         code: '',
         splitRatio: '',
+        availability: LeaseStatusEnum.available,
       });
     }
     setErrors({ code: '', splitRatio: '' });
@@ -129,19 +141,40 @@ export default function LeaseOfferEditorDialog({ open, onOpenChange, listing }: 
       };
 
       if (isEditing) {
+        // Update listing fields
         await updateListing.mutateAsync(data);
+        
+        // Update availability if it changed
+        if (listing && listing.status !== formData.availability) {
+          await updateAvailability.mutateAsync({
+            id: formData.id.trim(),
+            status: formData.availability,
+          });
+        }
+        
         toast.success('Listing updated successfully');
       } else {
+        // Create listing
         await createListing.mutateAsync(data);
+        
+        // Set initial availability if not default
+        if (formData.availability !== LeaseStatusEnum.available) {
+          await updateAvailability.mutateAsync({
+            id: formData.id.trim(),
+            status: formData.availability,
+          });
+        }
+        
         toast.success('Listing created successfully');
       }
       onOpenChange(false);
     } catch (error: any) {
+      console.error('Submit error:', error);
       toast.error(error.message || `Failed to ${isEditing ? 'update' : 'create'} listing`);
     }
   };
 
-  const isPending = createListing.isPending || updateListing.isPending;
+  const isPending = createListing.isPending || updateListing.isPending || updateAvailability.isPending;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -197,6 +230,24 @@ export default function LeaseOfferEditorDialog({ open, onOpenChange, listing }: 
             />
             {errors.splitRatio && <p className="text-xs text-destructive">{errors.splitRatio}</p>}
             <p className="text-xs text-muted-foreground">Format: NN/NN (first number goes to NLO, second to ULO)</p>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="availability">Availability</Label>
+            <Select
+              value={formData.availability}
+              onValueChange={(value) => setFormData({ ...formData, availability: value as LeaseStatus })}
+              disabled={isPending}
+            >
+              <SelectTrigger id="availability">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={LeaseStatusEnum.available}>Available</SelectItem>
+                <SelectItem value={LeaseStatusEnum.unavailable}>In Use</SelectItem>
+                <SelectItem value={LeaseStatusEnum.archived}>Archived</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">Set the current availability status for this listing</p>
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isPending}>

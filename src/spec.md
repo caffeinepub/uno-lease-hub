@@ -1,12 +1,13 @@
 # Specification
 
 ## Summary
-**Goal:** Fix the /dashboard Internet Identity admin login flow so authenticated users reliably reach the dashboard without infinite initialization, silent failures, or manual refresh.
+**Goal:** Make it clear and easy for admins to create and edit Lease Code, Split Ratio, and Availability in the Dashboard “My Offers” tab.
 
 **Planned changes:**
-- Update the /dashboard auth gate (RequireAuth) to show a clear admin-specific login prompt when signed out, with English CTA copy consistent with existing auth-guard copy.
-- Fix authenticated actor readiness detection so that after Internet Identity login the app initializes and uses an authenticated backend actor (including re-running `_initializeAccessControlWithSecret`) and transitions cleanly between initializing, ready, and error/timeout states.
-- Ensure actor/initialization failures surface the existing “Connection Issue” or initialization timeout states (not an infinite spinner), and that “Try Again” retries initialization without a full page reload while clearing prior error/timeout state.
-- Prevent raw/internal agent/actor errors from being shown directly to end users during the login/initialization flow.
+- Improve the “My Offers” empty state to clearly explain that inputs are available via “Create Listing” (or the edit pencil) and that Lease Code, Split Ratio, and Availability are set there.
+- Add a brief hint above/near the listings table explaining where to edit Lease Code/Split Ratio (Edit action) and where Availability can be changed (Availability control).
+- Add an “Availability” field to the Create/Edit Lease Listing dialog with options: Available / In Use / Archived, and preselect the current value when editing.
+- On dialog submit, persist Lease Code + Split Ratio and also persist Availability using existing frontend orchestration (no new backend API), then refresh the table data so updates appear without a manual reload.
+- Add a user-friendly error state in “My Offers” when listings fail to load, including a “Retry” action that refetches data.
 
-**User-visible outcome:** Visiting /dashboard while signed out shows an “Admin Login” prompt; after successful Internet Identity login the dashboard loads automatically, and if initialization fails or times out the user sees a friendly error state with a working “Try Again” retry (no refresh needed).
+**User-visible outcome:** Admins can clearly find where to create/edit Lease Code, Split Ratio, and Availability; they can set Availability directly in the listing editor; and the dashboard shows a clear error + retry when listings can’t be loaded instead of looking empty.

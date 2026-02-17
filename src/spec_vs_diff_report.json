@@ -1,15 +1,43 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-17T05:56:27.187Z",
-  "summary": "Diff updates the /dashboard auth gate (RequireAuth) with admin-specific login copy, adds timeout-based initialization detection, and introduces/updates a useActorReadiness hook that attempts authenticated actor creation and runs _initializeAccessControlWithSecret with retry support. No changes are shown to the immutable useInternetIdentity hook paths.",
-  "missing_requirements": [],
-  "hallucinated_features": [],
-  "confidence": 0.6,
+  "generatedAt": "2026-02-17T06:12:33.151Z",
+  "summary": "Diff adds owner-listings error UI with Retry in the My Offers panel and extends the lease editor dialog form state to include an Availability field (defaulted and prefilled on edit). However, due to truncation, it’s not fully evident that the My Offers panel includes the required instructional hints/empty-state guidance, nor that saving in the dialog persistently updates Availability alongside code/split and refreshes the table automatically.",
+  "missing_requirements": [
+    {
+      "id": "REQ-51",
+      "requirement": "Ensure the Dashboard \"My Offers\" tab provides an obvious, usable way to create/edit Lease Code and Split Ratio, including clear guidance in the zero-listings empty state and a short hint near the table header when listings exist.",
+      "reason": "OwnerOffersPanel render section is truncated before the empty-state and table header content, so the required instructional hint/empty-state guidance is not verifiable from the diff summary.",
+      "evidence": [
+        "frontend/src/components/dashboard/OwnerOffersPanel.tsx (truncated)",
+        "frontend/src/components/leases/EmptyState.tsx"
+      ]
+    },
+    {
+      "id": "REQ-52",
+      "requirement": "Submitting the Create/Edit dialog must persist the chosen Availability status (Available / In Use / Archived) along with code/split (via existing mutations/orchestration) and reflect updates in the My Offers table without manual refresh.",
+      "reason": "LeaseOfferEditorDialog shows availability in local form state and preselects from listing.status, but the submission logic is truncated before showing that it actually calls the existing update-availability mutation (or otherwise persists status) and triggers UI refresh.",
+      "evidence": [
+        "frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx (truncated)"
+      ]
+    }
+  ],
+  "hallucinated_features": [
+    {
+      "description": "Lease editor submit validation appears to require a manually-entered \"Listing ID\" (toast: \"Please enter a Listing ID\").",
+      "reason": "BuildRequest focuses on editing Lease Code, Split Ratio, and Availability in the dashboard; it does not request adding/forcing manual Listing ID entry as a required field, and this could add friction to the intended admin flow.",
+      "evidence": [
+        "frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx (truncated)"
+      ]
+    }
+  ],
+  "confidence": 0.62,
   "changed_files": [
     "frontend-file-summaries.txt",
-    "frontend/src/components/auth/RequireAuth.tsx",
-    "frontend/src/hooks/useActorReadiness.ts",
+    "frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx",
+    "frontend/src/components/dashboard/OwnerOffersPanel.tsx",
+    "frontend/src/components/leases/EmptyState.tsx",
+    "frontend/src/hooks/useLeaseListings.ts",
     "project_state.json"
   ]
 }

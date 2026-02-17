@@ -24,9 +24,10 @@ export function useGetOwnerListings() {
   return useQuery<LeaseListing[]>({
     queryKey: ['ownerListings'],
     queryFn: async () => {
-      if (!actor) return [];
+      if (!actor) throw new Error('Actor not available');
       return actor.getOwnerListings();
     },
     enabled: isActorReady,
+    retry: false,
   });
 }

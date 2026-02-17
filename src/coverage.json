@@ -1,7 +1,7 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-17T05:56:27.191Z",
+  "generatedAt": "2026-02-17T06:12:33.156Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
@@ -11,41 +11,41 @@
     "implemented": 3,
     "items": [
       {
-        "id": "REQ-48",
-        "summary": "Fix the dashboard authentication flow so that an admin can successfully sign in with Internet Identity and access /dashboard without getting stuck in an endless initialization state or failing silently.",
+        "id": "REQ-51",
+        "summary": "Ensure the Dashboard \"My Offers\" tab provides an obvious, usable way for an admin to create and edit a lease listing’s Lease Code (UUID) and Split Ratio (NLO/ULO), including clear guidance when no listings exist so the user understands they must click \"Create Listing\" (or the edit pencil) to access the input fields.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/auth/RequireAuth.tsx",
-          "frontend/src/hooks/useActorReadiness.ts"
+          "frontend/src/components/dashboard/OwnerOffersPanel.tsx",
+          "frontend/src/components/leases/EmptyState.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/components/auth/RequireAuth.tsx",
-          "frontend/src/hooks/useActorReadiness.ts"
+          "frontend/src/components/dashboard/OwnerOffersPanel.tsx",
+          "frontend/src/components/leases/EmptyState.tsx"
         ]
       },
       {
-        "id": "REQ-49",
-        "summary": "Correct actor-readiness detection for authenticated sessions so the app reliably creates and uses an authenticated backend actor after login (including re-initializing access control via _initializeAccessControlWithSecret) and accurately transitions between initializing, ready, and error states.",
+        "id": "REQ-52",
+        "summary": "Add an Availability Status control to the \"Create Lease Listing\" / \"Edit Lease Listing\" dialog so admins can set and update the lease availability status in the same place they edit Lease Code and Split Ratio, using English labels consistent with the table dropdown (Available / In Use / Archived).",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/hooks/useActor.ts",
-          "frontend/src/hooks/useActorReadiness.ts",
-          "frontend/src/components/auth/RequireAuth.tsx"
+          "frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx",
+          "frontend/src/hooks/useOwnerDashboard.ts"
         ],
         "matchedFiles": [
-          "frontend/src/hooks/useActorReadiness.ts",
-          "frontend/src/components/auth/RequireAuth.tsx"
+          "frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx"
         ]
       },
       {
-        "id": "REQ-50",
-        "summary": "Make the RequireAuth unauthenticated dashboard gate consistent with the single-admin intent by updating its login CTA copy to be admin-specific and in English (align with the TopNav login label behavior).",
+        "id": "REQ-53",
+        "summary": "If the dashboard cannot load owner listings (e.g., due to authorization or session readiness), display a concise English error state in the My Offers panel that explains the listings could not be loaded and provides a retry action, rather than silently rendering an empty area that looks like “no inputs exist.”",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/auth/RequireAuth.tsx"
+          "frontend/src/components/dashboard/OwnerOffersPanel.tsx",
+          "frontend/src/hooks/useLeaseListings.ts"
         ],
         "matchedFiles": [
-          "frontend/src/components/auth/RequireAuth.tsx"
+          "frontend/src/components/dashboard/OwnerOffersPanel.tsx",
+          "frontend/src/hooks/useLeaseListings.ts"
         ]
       }
     ]
@@ -55,8 +55,10 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/components/auth/RequireAuth.tsx",
-    "frontend/src/hooks/useActorReadiness.ts",
+    "frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx",
+    "frontend/src/components/dashboard/OwnerOffersPanel.tsx",
+    "frontend/src/components/leases/EmptyState.tsx",
+    "frontend/src/hooks/useLeaseListings.ts",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

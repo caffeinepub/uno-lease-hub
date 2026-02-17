@@ -1,75 +1,86 @@
 {
   "kind": "build_request",
-  "title": "Fix dashboard Internet Identity login and actor initialization",
-  "projectName": "Lease Code Dashboard",
-  "priority": "high",
+  "title": "Restore and clarify dashboard inputs for Lease Code, Split Ratio, and Availability",
+  "projectName": "Lease Code Hub",
+  "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-48",
-      "text": "Fix the dashboard authentication flow so that an admin can successfully sign in with Internet Identity and access /dashboard without getting stuck in an endless initialization state or failing silently.",
+      "id": "REQ-51",
+      "text": "Ensure the Dashboard \"My Offers\" tab provides an obvious, usable way for an admin to create and edit a lease listing’s Lease Code (UUID) and Split Ratio (NLO/ULO), including clear guidance when no listings exist so the user understands they must click \"Create Listing\" (or the edit pencil) to access the input fields.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-4"
+          "msg-6"
         ],
         "quotes": [
-          "dashboard login is not working"
+          "the dashboard is not showing any input fields where i can update a lease code, split ratio and lease code availability status...why?"
         ]
       },
       "acceptanceCriteria": [
-        "When a signed-out visitor navigates to /dashboard, they see a clear admin sign-in prompt and can complete the Internet Identity login flow.",
-        "After a successful Internet Identity login, /dashboard renders the dashboard content (tabs and panels) without requiring a manual page refresh.",
-        "The UI does not surface raw/internal errors (e.g., agent/actor errors) directly to end users during the login flow."
+        "When there are zero listings, the empty state in the My Offers panel clearly explains how to add a listing and where the inputs (Lease Code, Split Ratio, Availability) are edited (Create Listing button / Edit action).",
+        "When listings exist, the My Offers panel includes a short, English hint near the table header (or above the table) explaining where to edit Lease Code/Split Ratio (Edit button) and where to change Availability (Availability dropdown).",
+        "No user-facing text mentions internal implementation details (e.g., actors, canisters, query keys)."
       ]
     },
     {
-      "id": "REQ-49",
-      "text": "Correct actor-readiness detection for authenticated sessions so the app reliably creates and uses an authenticated backend actor after login (including re-initializing access control via _initializeAccessControlWithSecret) and accurately transitions between initializing, ready, and error states.",
+      "id": "REQ-52",
+      "text": "Add an Availability Status control to the \"Create Lease Listing\" / \"Edit Lease Listing\" dialog so admins can set and update the lease availability status in the same place they edit Lease Code and Split Ratio, using English labels consistent with the table dropdown (Available / In Use / Archived).",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-4"
+          "msg-6"
         ],
         "quotes": [
-          "dashboard login is not working"
+          "the dashboard is not showing any input fields where i can update a lease code, split ratio and lease code availability status...why?"
         ]
       },
       "acceptanceCriteria": [
-        "After login, the app uses an authenticated actor (not an anonymous actor) for dashboard operations that require admin permissions.",
-        "If actor creation or _initializeAccessControlWithSecret fails, RequireAuth shows the existing Connection Issue state (not an infinite spinner), and the Try Again button retries actor creation without a full page reload.",
-        "If actor initialization is simply slow, RequireAuth shows the existing Initialization Error timeout state after the configured timeout, and Try Again retries without a full page reload.",
-        "Retrying (Try Again) clears the prior error/timeout state and, on success, proceeds to render the dashboard."
+        "The lease editor dialog includes an \"Availability\" field with the same options currently used in the My Offers table dropdown: Available, In Use, Archived.",
+        "When editing an existing listing, the dialog preselects the current listing status.",
+        "Submitting the dialog updates Lease Code + Split Ratio via the existing create/update listing mutations and also persists the chosen Availability status (either by calling the existing update-availability mutation as part of submit, or by another equivalent frontend-only orchestration without requiring a backend API change).",
+        "After a successful save, the My Offers table reflects the updated code/split/status without requiring a manual page refresh."
       ]
     },
     {
-      "id": "REQ-50",
-      "text": "Make the RequireAuth unauthenticated dashboard gate consistent with the single-admin intent by updating its login CTA copy to be admin-specific and in English (align with the TopNav login label behavior).",
+      "id": "REQ-53",
+      "text": "If the dashboard cannot load owner listings (e.g., due to authorization or session readiness), display a concise English error state in the My Offers panel that explains the listings could not be loaded and provides a retry action, rather than silently rendering an empty area that looks like “no inputs exist.”",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-4"
+          "msg-6"
         ],
         "quotes": [
-          "dashboard login is not working"
+          "the dashboard is not showing any input fields where i can update a lease code, split ratio and lease code availability status...why?"
         ]
       },
       "acceptanceCriteria": [
-        "On /dashboard while signed out, the login CTA uses admin wording (e.g., \"Admin Login\") instead of generic \"Sign In\".",
-        "All user-facing auth-gate text remains in English and remains consistent with frontend/src/components/auth/authGuardCopy.ts for error states."
+        "If the owner listings query errors, the My Offers panel renders an error card/message (in English) with a \"Retry\" action.",
+        "The error UI does not expose raw backend/internal error strings; it should be user-friendly (e.g., “Could not load your listings. Please try again.”).",
+        "Retry triggers a refetch of the owner listings data and returns to normal rendering when successful."
       ]
     }
   ],
   "constraints": [
-    "Do not edit files under frontend/src/hooks/useInternetIdentity.ts or frontend/src/hooks/useInternetIdentity.tsx (immutable paths).",
-    "Keep all backend logic in the existing single Motoko actor (backend/main.mo); only add a migration file if a stable-state upgrade is required (not expected for this fix)."
+    "Do not edit any files under frontend/src/components/ui (Shadcn UI components must be composed, not modified).",
+    "Backend must remain a single Motoko actor in backend/main.mo; do not introduce additional backend services."
   ],
   "nonGoals": [
-    "Adding any new authentication provider beyond Internet Identity.",
-    "Implementing multi-admin roles or changing the product’s single-admin model.",
-    "Adding external logging/monitoring services."
+    "Do not add new authentication providers beyond Internet Identity.",
+    "Do not change the public lease browsing UI behavior as part of this fix (scope is the admin dashboard editing experience).",
+    "Do not introduce a new backend API unless strictly necessary; prefer using the existing updateLeaseAvailability API from the frontend."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [],
+    "goalsToRemove": [],
+    "preferencesToAdd": [],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
   }
 }

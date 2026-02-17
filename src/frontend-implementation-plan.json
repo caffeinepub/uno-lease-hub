@@ -1,68 +1,69 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Fix dashboard Internet Identity login and authenticated actor readiness",
+  "title": "Restore dashboard edit inputs for Lease Code, Split Ratio, and Availability",
   "requirements": [
     {
-      "id": "REQ-48",
-      "summary": "Ensure /dashboard login flow completes and the dashboard renders immediately after Internet Identity sign-in without infinite initialization or silent failures.",
+      "id": "REQ-51",
+      "summary": "Clarify where admins can create/edit Lease Code and Split Ratio, and improve My Offers empty + non-empty guidance text.",
       "acceptanceCriteria": [
-        "When a signed-out visitor navigates to /dashboard, they see a clear admin sign-in prompt and can complete the Internet Identity login flow.",
-        "After a successful Internet Identity login, /dashboard renders the dashboard content (tabs and panels) without requiring a manual page refresh.",
-        "The UI does not surface raw/internal errors (e.g., agent/actor errors) directly to end users during the login flow."
+        "When there are zero listings, the empty state in the My Offers panel clearly explains how to add a listing and where the inputs (Lease Code, Split Ratio, Availability) are edited (Create Listing button / Edit action).",
+        "When listings exist, the My Offers panel includes a short, English hint near the table header (or above the table) explaining where to edit Lease Code/Split Ratio (Edit button) and where to change Availability (Availability dropdown).",
+        "No user-facing text mentions internal implementation details (e.g., actors, canisters, query keys)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/auth/RequireAuth.tsx",
+          "path": "frontend/src/components/dashboard/OwnerOffersPanel.tsx",
           "operation": "modify",
-          "description": "Update the unauthenticated /dashboard gate to present an admin-specific sign-in prompt and to rely on unified actor-readiness states (initializing/ready/error) so successful login transitions to dashboard content without a page refresh; keep internal errors console-only."
+          "description": "In the My Offers panel, add an English hint above the listings table explaining: use the Edit (pencil) action to edit Lease Code (UUID) + Split Ratio, and use the Availability dropdown to change status. Update the empty-state copy to explicitly instruct users to click “Create Listing” to access the editor inputs (Lease Code, Split Ratio, Availability). Also ensure this panel remains behind the existing authorization component patterns (RequireAuth/actor readiness) for admin-only access; verify the component's usage instructions before implementing."
         },
         {
-          "path": "frontend/src/hooks/useActorReadiness.ts",
+          "path": "frontend/src/components/leases/EmptyState.tsx",
           "operation": "modify",
-          "description": "Refactor readiness logic to avoid duplicate/competing actor creation paths and to expose a single consistent set of states that RequireAuth can use to render login/initializing/error/ready without getting stuck."
+          "description": "Allow EmptyState to optionally render richer guidance (e.g., support a ReactNode description or an optional secondary line) so the My Offers empty state can clearly instruct where to find/create/edit Lease Code, Split Ratio, and Availability without adding new routes. Verify the component's usage instructions before implementing."
         }
       ]
     },
     {
-      "id": "REQ-49",
-      "summary": "Make authenticated actor creation and readiness detection reliable (including access-control secret initialization) with correct transitions and retry behavior.",
+      "id": "REQ-52",
+      "summary": "Add Availability control to the Create/Edit Lease Listing dialog and persist it using existing frontend mutations.",
       "acceptanceCriteria": [
-        "After login, the app uses an authenticated actor (not an anonymous actor) for dashboard operations that require admin permissions.",
-        "If actor creation or _initializeAccessControlWithSecret fails, RequireAuth shows the existing Connection Issue state (not an infinite spinner), and the Try Again button retries actor creation without a full page reload.",
-        "If actor initialization is simply slow, RequireAuth shows the existing Initialization Error timeout state after the configured timeout, and Try Again retries without a full page reload.",
-        "Retrying (Try Again) clears the prior error/timeout state and, on success, proceeds to render the dashboard."
+        "The lease editor dialog includes an \"Availability\" field with the same options currently used in the My Offers table dropdown: Available, In Use, Archived.",
+        "When editing an existing listing, the dialog preselects the current listing status.",
+        "Submitting the dialog updates Lease Code + Split Ratio via the existing create/update listing mutations and also persists the chosen Availability status (either by calling the existing update-availability mutation as part of submit, or by another equivalent frontend-only orchestration without requiring a backend API change).",
+        "After a successful save, the My Offers table reflects the updated code/split/status without requiring a manual page refresh."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/hooks/useActor.ts",
+          "path": "frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx",
           "operation": "modify",
-          "description": "Expose actor query status/error and a retry mechanism; ensure authenticated sessions create an identity-bound actor and re-run access-control initialization via _initializeAccessControlWithSecret (authorization component). Verify the component's usage instructions before implementing."
+          "description": "Add an Availability field to the dialog form using existing shadcn-ui Select components (compose only; do not modify anything under frontend/src/components/ui). Use English labels consistent with the table dropdown (Available / In Use / Archived), preselect current status when editing, and default sensibly when creating. On submit, orchestrate saving by calling the existing create/update listing mutation and then persisting the chosen availability via the existing update-availability mutation (frontend-only; no backend change). Ensure successful save closes the dialog and that React Query invalidation/refetch results in the updated values appearing in My Offers without manual refresh. Verify the component's usage instructions before implementing."
         },
         {
-          "path": "frontend/src/hooks/useActorReadiness.ts",
+          "path": "frontend/src/hooks/useOwnerDashboard.ts",
           "operation": "modify",
-          "description": "Remove the separate actor-init-check query and instead derive readiness/error from the single actor source-of-truth; implement a refetchActor that properly forces authenticated actor recreation and clears prior error state for retries (authorization component). Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/auth/RequireAuth.tsx",
-          "operation": "modify",
-          "description": "Wire Try Again to the unified refetchActor so it clears timeout/error UI, retries actor creation/initialization without full page reload, and renders the dashboard as soon as actor readiness becomes true; ensure user-facing error text comes from AUTH_GUARD_COPY only."
+          "description": "If needed for cleaner orchestration, adjust or extend the existing owner-dashboard hooks to support a single dialog submit flow that can update listing fields and availability while still leveraging existing mutations and their cache invalidations (ownerListings/publicListings). Keep behavior frontend-only and consistent with current patterns. Verify the component's usage instructions before implementing."
         }
       ]
     },
     {
-      "id": "REQ-50",
-      "summary": "Align RequireAuth unauthenticated dashboard CTA copy with single-admin intent and TopNav (admin-specific, English).",
+      "id": "REQ-53",
+      "summary": "Show a user-friendly error state with Retry in My Offers when owner listings fail to load.",
       "acceptanceCriteria": [
-        "On /dashboard while signed out, the login CTA uses admin wording (e.g., \"Admin Login\") instead of generic \"Sign In\".",
-        "All user-facing auth-gate text remains in English and remains consistent with frontend/src/components/auth/authGuardCopy.ts for error states."
+        "If the owner listings query errors, the My Offers panel renders an error card/message (in English) with a \"Retry\" action.",
+        "The error UI does not expose raw backend/internal error strings; it should be user-friendly (e.g., “Could not load your listings. Please try again.”).",
+        "Retry triggers a refetch of the owner listings data and returns to normal rendering when successful."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/auth/RequireAuth.tsx",
+          "path": "frontend/src/components/dashboard/OwnerOffersPanel.tsx",
           "operation": "modify",
-          "description": "Update unauthenticated gate copy to be admin-specific (button label and supporting text) while keeping error-state wording sourced from AUTH_GUARD_COPY and remaining fully English."
+          "description": "Read the error/refetch state from useGetOwnerListings and render a concise, English error card/message in the My Offers panel when loading owner listings fails. Include a “Retry” button that triggers a refetch and restores normal rendering on success. Do not display raw error strings; log details to console only. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/hooks/useLeaseListings.ts",
+          "operation": "modify",
+          "description": "Ensure useGetOwnerListings exposes stable error and refetch behavior suitable for a My Offers error UI (e.g., avoid masking failures as empty arrays). Keep query enabled based on existing readiness checks and allow manual refetch from the panel. Verify the component's usage instructions before implementing."
         }
       ]
     }
