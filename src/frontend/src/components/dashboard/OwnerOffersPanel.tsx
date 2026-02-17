@@ -73,50 +73,52 @@ export default function OwnerOffersPanel() {
               description="Create your first lease listing to start receiving requests."
             />
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>ID</TableHead>
-                  <TableHead>Location</TableHead>
-                  <TableHead>Area</TableHead>
-                  <TableHead>Capacity</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {listings.map((listing) => (
-                  <TableRow key={listing.id}>
-                    <TableCell className="font-medium">{listing.id}</TableCell>
-                    <TableCell>{listing.location}</TableCell>
-                    <TableCell>{listing.area.toString()} sq ft</TableCell>
-                    <TableCell>{listing.capacity.toString()} nodes</TableCell>
-                    <TableCell>
-                      <Badge variant={listing.status === 'active' ? 'default' : 'secondary'}>
-                        {listing.status === 'active' ? 'Active' : 'Archived'}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
-                        <Button variant="ghost" size="sm" onClick={() => handleEdit(listing)}>
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        {listing.status === 'active' && (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleArchive(listing.id)}
-                            disabled={archiveListing.isPending}
-                          >
-                            <Archive className="h-4 w-4" />
-                          </Button>
-                        )}
-                      </div>
-                    </TableCell>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>ID</TableHead>
+                    <TableHead>Lease Code</TableHead>
+                    <TableHead>Split Ratio</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {listings.map((listing) => (
+                    <TableRow key={listing.id}>
+                      <TableCell className="font-medium">{listing.id}</TableCell>
+                      <TableCell className="font-mono text-xs">{listing.code || '—'}</TableCell>
+                      <TableCell>
+                        {listing.splitRatio ? `${listing.splitRatio.nlo}/${listing.splitRatio.ulo}` : '—'}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={listing.status === 'active' ? 'default' : 'secondary'}>
+                          {listing.status === 'active' ? 'Active' : 'Archived'}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex justify-end gap-2">
+                          <Button variant="ghost" size="sm" onClick={() => handleEdit(listing)}>
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          {listing.status === 'active' && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleArchive(listing.id)}
+                              disabled={archiveListing.isPending}
+                            >
+                              <Archive className="h-4 w-4" />
+                            </Button>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           )}
         </CardContent>
       </Card>

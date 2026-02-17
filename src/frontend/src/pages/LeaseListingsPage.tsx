@@ -13,8 +13,16 @@ export default function LeaseListingsPage() {
 
   const sortedListings = listings
     ? [...listings].sort((a, b) => {
-        if (sortBy === 'area') return Number(b.area - a.area);
-        if (sortBy === 'capacity') return Number(b.capacity - a.capacity);
+        if (sortBy === 'area') {
+          const areaA = a.area !== undefined ? a.area : 0n;
+          const areaB = b.area !== undefined ? b.area : 0n;
+          return Number(areaB - areaA);
+        }
+        if (sortBy === 'capacity') {
+          const capacityA = a.capacity !== undefined ? a.capacity : 0n;
+          const capacityB = b.capacity !== undefined ? b.capacity : 0n;
+          return Number(capacityB - capacityA);
+        }
         return 0; // newest (default order from backend)
       })
     : [];

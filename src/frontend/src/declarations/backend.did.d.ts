@@ -14,11 +14,11 @@ export interface LeaseListing {
   'id' : string,
   'status' : LeaseStatus,
   'owner' : Principal,
-  'area' : bigint,
-  'code' : [] | [string],
-  'splitRatio' : [] | [SplitRatio],
-  'capacity' : bigint,
-  'location' : string,
+  'area' : [] | [bigint],
+  'code' : string,
+  'splitRatio' : SplitRatio,
+  'capacity' : [] | [bigint],
+  'location' : [] | [string],
 }
 export interface LeaseRequest {
   'id' : string,
@@ -44,7 +44,7 @@ export interface _SERVICE {
   'archiveLeaseListing' : ActorMethod<[string], undefined>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
   'createLeaseListing' : ActorMethod<
-    [string, string, bigint, bigint, [] | [string], [] | [SplitRatio]],
+    [string, string, SplitRatio, [] | [string], [] | [bigint], [] | [bigint]],
     string
   >,
   'getActiveListings' : ActorMethod<[], Array<LeaseListing>>,
@@ -59,7 +59,7 @@ export interface _SERVICE {
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
   'submitLeaseRequest' : ActorMethod<[string, string], string>,
   'updateLeaseListing' : ActorMethod<
-    [string, string, bigint, bigint, [] | [string], [] | [SplitRatio]],
+    [string, string, SplitRatio, [] | [string], [] | [bigint], [] | [bigint]],
     undefined
   >,
   'updateRequestStatus' : ActorMethod<

@@ -1,37 +1,57 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Simplify Dashboard Lease Listing Editor Required Fields",
+  "title": "Make Location/Area/Capacity optional in dashboard create/edit and public browsing UI",
   "requirements": [
     {
-      "id": "REQ-27",
-      "summary": "Simplify the Create/Edit Lease Listing dialog so only Listing ID, Lease Code, and Split Ratio are required, and remove Location/Area/Capacity from the primary required UI/validation.",
+      "id": "REQ-30",
+      "summary": "Update dashboard create/edit lease listing flow to require only Listing ID, Lease Code, and Split Ratio and align create/update mutations with the updated backend API.",
       "acceptanceCriteria": [
-        "Creating a listing from the dashboard succeeds when only Listing ID + Lease Code + Split Ratio are provided by the user (no Location/Area/Capacity input required).",
-        "The form no longer blocks submission with the error \"Please fill in all required fields\" due to missing Location/Area/Capacity.",
-        "User-facing labels and helper text remain in English."
+        "frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx continues to require only Listing ID, Lease Code, and Split Ratio for submission.",
+        "frontend/src/hooks/useOwnerDashboard.ts create/update mutation function signatures and actor calls are updated to match the new backend method signatures (no required location/area/capacity arguments).",
+        "Creating and updating a listing from the dashboard succeeds without providing location/area/capacity and persists the lease code and split ratio."
       ],
       "file_operations": [
         {
           "path": "frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx",
           "operation": "modify",
-          "description": "Update the dialog form to make Listing ID, Lease Code (UUID), and Split Ratio (NLO/ULO) the only required user inputs; remove Location/Area/Capacity from the primary form UI and from the required-field validation (optionally place them into a clearly-labeled optional/advanced section that does not affect submit eligibility). Update labels/helper text so Lease Code and Split Ratio are no longer marked optional, and ensure the generic required-fields toast is no longer triggered by missing Location/Area/Capacity."
+          "description": "Remove any implicit/placeholder submission values for location/area/capacity (e.g., 'Unspecified', 0n) and submit only { id, code, splitRatio } (with splitRatio parsed to { nlo, ulo }) to the create/update mutations; keep validation and required-field enforcement limited to Listing ID, Lease Code (UUID), and Split Ratio (NLO/ULO)."
+        },
+        {
+          "path": "frontend/src/hooks/useOwnerDashboard.ts",
+          "operation": "modify",
+          "description": "Update create/update mutation input types to no longer require location/area/capacity, and update actor call argument ordering/signatures to match the updated backend capability (i.e., do not require passing location/area/capacity for success; if still supported, pass null/omitted per the updated typings)."
+        },
+        {
+          "path": "frontend/src/components/dashboard/OwnerOffersPanel.tsx",
+          "operation": "modify",
+          "description": "Make the dashboard listings table resilient to optional location/area/capacity by avoiding unconditional rendering/toString() calls on potentially-absent fields (e.g., show a neutral placeholder like '—' when missing), so owner listings continue to render cleanly after the model change."
         }
       ]
     },
     {
-      "id": "REQ-28",
-      "summary": "On submit, automatically supply safe defaults for Location/Area/Capacity so create/update calls remain valid without user entry, while keeping UUID and split ratio validation.",
+      "id": "REQ-31",
+      "summary": "Update public browsing UI to omit Location/Area/Capacity headings when those fields are absent and keep listing cards/details rendering clean with optional fields.",
       "acceptanceCriteria": [
-        "Submitting the simplified form calls the existing actor methods (createLeaseListing/updateLeaseListing) without backend validation/trap errors due to missing Location/Area/Capacity.",
-        "Lease Code UUID validation still works (invalid UUIDs are rejected with a clear inline error).",
-        "Split Ratio validation still works (invalid ratios are rejected with a clear inline error)."
+        "frontend/src/components/leases/LeaseListingCard.tsx does not show Location/Area/Capacity UI when the corresponding fields are not present on the listing.",
+        "frontend/src/pages/LeaseDetailsPage.tsx does not show Location/Area/Capacity sections when the corresponding fields are not present on the listing.",
+        "Lease Code and Split Ratio continue to display on Lease Details when present, using English labels and explicitly attributing split values to NLO then ULO."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx",
+          "path": "frontend/src/components/leases/LeaseListingCard.tsx",
           "operation": "modify",
-          "description": "Adjust submit handler to (1) require and validate Lease Code as a UUID with inline error, (2) require and validate Split Ratio with inline error, and (3) when Location/Area/Capacity are blank, automatically pass safe defaults to mutations (e.g., location=\"Unspecified\", area=0n, capacity=0n) while preserving user-entered Listing ID, Lease Code, and Split Ratio; ensure the mutations still receive valid types (BigInt for area/capacity, and non-null code/splitRatio when required)."
+          "description": "Conditionally render Location/Area/Capacity sections only when listing.location/listing.area/listing.capacity are present; avoid calling toString() on optional values; keep the card layout tidy when one or more fields are missing."
+        },
+        {
+          "path": "frontend/src/pages/LeaseDetailsPage.tsx",
+          "operation": "modify",
+          "description": "Conditionally render Location/Area/Capacity blocks only when their corresponding listing fields are present; ensure Lease Code and Split Ratio sections remain visible when present and that split ratio is labeled in English and shown as 'NLO <nlo> / ULO <ulo>'."
+        },
+        {
+          "path": "frontend/src/pages/LeaseListingsPage.tsx",
+          "operation": "modify",
+          "description": "Adjust sorting logic to handle optional area/capacity safely (treat missing values as 0 or sort them last) to prevent runtime errors and keep the listings page rendering clean after optional-field changes."
         }
       ]
     }

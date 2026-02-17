@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 23,
+  "projectStateVersion": 25,
   "summary": "Plan a custom, mobile-compatible website running on the ICP blockchain for UNO/ULO lease listings and lease-code distribution, using unitynodes.club as UI inspiration but aligning product/content guidance with https://unitynodes.io (Unity mobile app is not ICP-powered). The site should clearly communicate there is a single UNO/admin offering ULO lease codes, and ULO users only browse listings and copy lease codes for use in the Unity App (no additional ULO functionality).",
   "architectural_notes": [
     "Target deployment/runtime: ICP blockchain (Internet Computer).",
@@ -18,7 +18,8 @@
     "Safety system may block sharing of the user's Internet Identity principal, preventing configuration of single-admin allowlist via chat.",
     "Build/deploy action to 'make the site live' intermittently fails with an error ('AI couldn't process your request successfully').",
     "Draft environment may fail to load some images and YouTube embeds, causing media not to appear in draft previews.",
-    "User reports being unable to log in to the site via Internet Identity (II sign-in flow not completing)."
+    "User reports being unable to log in to the site via Internet Identity (II sign-in flow not completing).",
+    "Creating a lease listing can fail with \"Actor not available\" error (frontend unable to create authenticated actor / identity not available)."
   ],
   "isFixRequest": true,
   "existing_features": [
@@ -229,6 +230,22 @@
         "REQ-28"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-update-the-frontend-dashboard-create-edit-lease-listing-flow-so-only-listing-id-lease-code-uuid-and-split-ratio-nlo-ulo-are-required-inputs-and-ensure-the-create-update-mutations-match-the-updated-backend-api-no-required-location-area-capacity-fields",
+      "title": "Update the frontend dashboard “Create/Edit Lease Listing” flow so only Listing ID, Lease Code (UUID), and Split Ratio (NLO/ULO) are required inputs, and ensure the create/update mutations match the updated backend API (no required Location/Area/Capacity fields).",
+      "reqIds": [
+        "REQ-30"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-remove-location-area-capacity-as-required-headings-in-the-public-lease-browsing-ui-by-not-displaying-those-fields-when-they-are-absent-and-ensure-the-listings-and-details-pages-still-render-cleanly-with-the-new-optional-listing-fields",
+      "title": "Remove Location/Area/Capacity as required “headings” in the public lease browsing UI by not displaying those fields when they are absent, and ensure the listings and details pages still render cleanly with the new optional listing fields.",
+      "reqIds": [
+        "REQ-31"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -330,6 +347,20 @@
       "id": "AR-18",
       "summary": "Simplify UNO dashboard 'Create Lease Listing' form so only required fields are Listing ID, Lease Code (UUID), and Split Ratio",
       "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-19",
+      "summary": "Update backend lease listing model/API so Location, Area, and Capacity are optional/not required; only Lease Code (UUID) and Split Ratio are required end-to-end",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-20",
+      "summary": "Update the backend lease listing data model and public Candid API so that Location, Area, and Capacity are optional/not required, and only Lease Code and Split Ratio are required for lease listings.",
+      "reqIds": [
+        "REQ-29"
+      ],
       "status": "pending"
     }
   ],

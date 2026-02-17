@@ -8,9 +8,9 @@ import Order "mo:core/Order";
 import Principal "mo:core/Principal";
 import MixinAuthorization "authorization/MixinAuthorization";
 import AccessControl "authorization/access-control";
+import Migration "migration";
 
-
-
+(with migration = Migration.run)
 actor {
   // ==== Types ====  
   public type LeaseStatus = { #active; #archived };
@@ -22,13 +22,13 @@ actor {
 
   public type LeaseListing = {
     id : Text;
-    location : Text;
-    area : Nat;
-    capacity : Nat;
+    location : ?Text;
+    area : ?Nat;
+    capacity : ?Nat;
     status : LeaseStatus;
     owner : Principal;
-    code : ?Text;
-    splitRatio : ?SplitRatio;
+    code : Text;
+    splitRatio : SplitRatio;
   };
 
   public type LeaseRequest = {
@@ -90,11 +90,11 @@ actor {
   // ==== Lease Management ====
   public shared ({ caller }) func createLeaseListing(
     id : Text,
-    location : Text,
-    area : Nat,
-    capacity : Nat,
-    code : ?Text,
-    splitRatio : ?SplitRatio,
+    code : Text,
+    splitRatio : SplitRatio,
+    location : ?Text,
+    area : ?Nat,
+    capacity : ?Nat,
   ) : async Text {
     if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
       Runtime.trap("Unauthorized: Only users can create lease listings");
@@ -102,13 +102,13 @@ actor {
 
     let listing : LeaseListing = {
       id;
+      code;
+      splitRatio;
       location;
       area;
       capacity;
       status = #active;
       owner = caller;
-      code;
-      splitRatio;
     };
 
     leaseListings.add(id, listing);
@@ -129,11 +129,11 @@ actor {
 
   public shared ({ caller }) func updateLeaseListing(
     id : Text,
-    location : Text,
-    area : Nat,
-    capacity : Nat,
-    code : ?Text,
-    splitRatio : ?SplitRatio,
+    code : Text,
+    splitRatio : SplitRatio,
+    location : ?Text,
+    area : ?Nat,
+    capacity : ?Nat,
   ) : async () {
     if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
       Runtime.trap("Unauthorized: Only users can update listings");
@@ -148,11 +148,11 @@ actor {
 
         let updatedListing : LeaseListing = {
           existingListing with
+          code;
+          splitRatio;
           location;
           area;
           capacity;
-          code;
-          splitRatio;
         };
         leaseListings.add(id, updatedListing);
       };
@@ -181,6 +181,9 @@ actor {
   };
 
   public query ({ caller }) func getActiveListings() : async [LeaseListing] {
+    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
+      Runtime.trap("Unauthorized: Only users can view listings");
+    };
     leaseListings.values().toArray().filter(func(l) { l.status == #active }).sort();
   };
 

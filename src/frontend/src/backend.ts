@@ -109,11 +109,11 @@ export interface LeaseListing {
     id: string;
     status: LeaseStatus;
     owner: Principal;
-    area: bigint;
-    code?: string;
-    splitRatio?: SplitRatio;
-    capacity: bigint;
-    location: string;
+    area?: bigint;
+    code: string;
+    splitRatio: SplitRatio;
+    capacity?: bigint;
+    location?: string;
 }
 export enum LeaseStatus {
     active = "active",
@@ -138,7 +138,7 @@ export interface backendInterface {
     _initializeAccessControlWithSecret(userSecret: string): Promise<void>;
     archiveLeaseListing(id: string): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
-    createLeaseListing(id: string, location: string, area: bigint, capacity: bigint, code: string | null, splitRatio: SplitRatio | null): Promise<string>;
+    createLeaseListing(id: string, code: string, splitRatio: SplitRatio, location: string | null, area: bigint | null, capacity: bigint | null): Promise<string>;
     getActiveListings(): Promise<Array<LeaseListing>>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
@@ -150,7 +150,7 @@ export interface backendInterface {
     isCallerAdmin(): Promise<boolean>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
     submitLeaseRequest(listingId: string, info: string): Promise<string>;
-    updateLeaseListing(id: string, location: string, area: bigint, capacity: bigint, code: string | null, splitRatio: SplitRatio | null): Promise<void>;
+    updateLeaseListing(id: string, code: string, splitRatio: SplitRatio, location: string | null, area: bigint | null, capacity: bigint | null): Promise<void>;
     updateRequestStatus(requestId: string, newStatus: Variant_rejected_accepted): Promise<void>;
 }
 import type { LeaseListing as _LeaseListing, LeaseRequest as _LeaseRequest, LeaseStatus as _LeaseStatus, SplitRatio as _SplitRatio, Time as _Time, UserProfile as _UserProfile, UserRole as _UserRole } from "./declarations/backend.did.d.ts";
@@ -198,17 +198,17 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async createLeaseListing(arg0: string, arg1: string, arg2: bigint, arg3: bigint, arg4: string | null, arg5: SplitRatio | null): Promise<string> {
+    async createLeaseListing(arg0: string, arg1: string, arg2: SplitRatio, arg3: string | null, arg4: bigint | null, arg5: bigint | null): Promise<string> {
         if (this.processError) {
             try {
-                const result = await this.actor.createLeaseListing(arg0, arg1, arg2, arg3, to_candid_opt_n3(this._uploadFile, this._downloadFile, arg4), to_candid_opt_n4(this._uploadFile, this._downloadFile, arg5));
+                const result = await this.actor.createLeaseListing(arg0, arg1, arg2, to_candid_opt_n3(this._uploadFile, this._downloadFile, arg3), to_candid_opt_n4(this._uploadFile, this._downloadFile, arg4), to_candid_opt_n4(this._uploadFile, this._downloadFile, arg5));
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.createLeaseListing(arg0, arg1, arg2, arg3, to_candid_opt_n3(this._uploadFile, this._downloadFile, arg4), to_candid_opt_n4(this._uploadFile, this._downloadFile, arg5));
+            const result = await this.actor.createLeaseListing(arg0, arg1, arg2, to_candid_opt_n3(this._uploadFile, this._downloadFile, arg3), to_candid_opt_n4(this._uploadFile, this._downloadFile, arg4), to_candid_opt_n4(this._uploadFile, this._downloadFile, arg5));
             return result;
         }
     }
@@ -366,17 +366,17 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async updateLeaseListing(arg0: string, arg1: string, arg2: bigint, arg3: bigint, arg4: string | null, arg5: SplitRatio | null): Promise<void> {
+    async updateLeaseListing(arg0: string, arg1: string, arg2: SplitRatio, arg3: string | null, arg4: bigint | null, arg5: bigint | null): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.updateLeaseListing(arg0, arg1, arg2, arg3, to_candid_opt_n3(this._uploadFile, this._downloadFile, arg4), to_candid_opt_n4(this._uploadFile, this._downloadFile, arg5));
+                const result = await this.actor.updateLeaseListing(arg0, arg1, arg2, to_candid_opt_n3(this._uploadFile, this._downloadFile, arg3), to_candid_opt_n4(this._uploadFile, this._downloadFile, arg4), to_candid_opt_n4(this._uploadFile, this._downloadFile, arg5));
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.updateLeaseListing(arg0, arg1, arg2, arg3, to_candid_opt_n3(this._uploadFile, this._downloadFile, arg4), to_candid_opt_n4(this._uploadFile, this._downloadFile, arg5));
+            const result = await this.actor.updateLeaseListing(arg0, arg1, arg2, to_candid_opt_n3(this._uploadFile, this._downloadFile, arg3), to_candid_opt_n4(this._uploadFile, this._downloadFile, arg4), to_candid_opt_n4(this._uploadFile, this._downloadFile, arg5));
             return result;
         }
     }
@@ -407,10 +407,10 @@ function from_candid_LeaseStatus_n8(_uploadFile: (file: ExternalBlob) => Promise
 function from_candid_UserRole_n13(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _UserRole): UserRole {
     return from_candid_variant_n14(_uploadFile, _downloadFile, value);
 }
-function from_candid_opt_n10(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [string]): string | null {
+function from_candid_opt_n10(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [bigint]): bigint | null {
     return value.length === 0 ? null : value[0];
 }
-function from_candid_opt_n11(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_SplitRatio]): SplitRatio | null {
+function from_candid_opt_n11(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [string]): string | null {
     return value.length === 0 ? null : value[0];
 }
 function from_candid_opt_n12(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_UserProfile]): UserProfile | null {
@@ -452,30 +452,30 @@ function from_candid_record_n7(_uploadFile: (file: ExternalBlob) => Promise<Uint
     id: string;
     status: _LeaseStatus;
     owner: Principal;
-    area: bigint;
-    code: [] | [string];
-    splitRatio: [] | [_SplitRatio];
-    capacity: bigint;
-    location: string;
+    area: [] | [bigint];
+    code: string;
+    splitRatio: _SplitRatio;
+    capacity: [] | [bigint];
+    location: [] | [string];
 }): {
     id: string;
     status: LeaseStatus;
     owner: Principal;
-    area: bigint;
-    code?: string;
-    splitRatio?: SplitRatio;
-    capacity: bigint;
-    location: string;
+    area?: bigint;
+    code: string;
+    splitRatio: SplitRatio;
+    capacity?: bigint;
+    location?: string;
 } {
     return {
         id: value.id,
         status: from_candid_LeaseStatus_n8(_uploadFile, _downloadFile, value.status),
         owner: value.owner,
-        area: value.area,
-        code: record_opt_to_undefined(from_candid_opt_n10(_uploadFile, _downloadFile, value.code)),
-        splitRatio: record_opt_to_undefined(from_candid_opt_n11(_uploadFile, _downloadFile, value.splitRatio)),
-        capacity: value.capacity,
-        location: value.location
+        area: record_opt_to_undefined(from_candid_opt_n10(_uploadFile, _downloadFile, value.area)),
+        code: value.code,
+        splitRatio: value.splitRatio,
+        capacity: record_opt_to_undefined(from_candid_opt_n10(_uploadFile, _downloadFile, value.capacity)),
+        location: record_opt_to_undefined(from_candid_opt_n11(_uploadFile, _downloadFile, value.location))
     };
 }
 function from_candid_variant_n14(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
@@ -517,7 +517,7 @@ function to_candid_UserRole_n1(_uploadFile: (file: ExternalBlob) => Promise<Uint
 function to_candid_opt_n3(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: string | null): [] | [string] {
     return value === null ? candid_none() : candid_some(value);
 }
-function to_candid_opt_n4(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: SplitRatio | null): [] | [_SplitRatio] {
+function to_candid_opt_n4(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: bigint | null): [] | [bigint] {
     return value === null ? candid_none() : candid_some(value);
 }
 function to_candid_variant_n19(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Variant_rejected_accepted): {

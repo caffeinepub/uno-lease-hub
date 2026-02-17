@@ -1,57 +1,74 @@
 {
   "kind": "build_request",
-  "title": "Simplify Dashboard Create Lease Listing to Only Require ID, Lease Code, and Split Ratio",
-  "projectName": "Lease Codes Hub",
+  "title": "Make location/area/capacity optional; require only lease code + split ratio end-to-end",
+  "projectName": "Lease Code Listings",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-27",
-      "text": "Update the Dashboard \"Create Lease Listing\" / \"Edit Lease Listing\" dialog (frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx) so the only user-input required fields are: Listing ID, Lease Code (UUID string), and Split Ratio (NLO/ULO, e.g., 60/40). Remove Location, Area, and Capacity from the required validation and from the primary form UI (they may be omitted entirely or moved into an optional/advanced section that is not required to submit).",
-      "target": "frontend",
+      "id": "REQ-29",
+      "text": "Update the backend lease listing data model and public Candid API so that Location, Area, and Capacity are optional/not required, and only Lease Code and Split Ratio are required for lease listings.",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "msg-9",
-          "msg-12"
+          "msg-1"
         ],
         "quotes": [
-          "for  the create lease listing in the dashboard login the only fields required are : listing id, lease code and split ratio",
-          "please try again"
+          "Hi... for lease listings .... the headings : location, area and capacity are not required....only the lease code and split ratio are required in both the frontend and backend of this site"
         ]
       },
       "acceptanceCriteria": [
-        "Creating a listing from the dashboard succeeds when only Listing ID + Lease Code + Split Ratio are provided by the user (no Location/Area/Capacity input required).",
-        "The form no longer blocks submission with the error \"Please fill in all required fields\" due to missing Location/Area/Capacity.",
-        "User-facing labels and helper text remain in English."
+        "In backend/main.mo, LeaseListing fields location/area/capacity are no longer required fields (i.e., they are optional or otherwise not mandatory to provide when creating/updating a listing).",
+        "Backend create/update listing methods no longer require clients to provide location/area/capacity values to succeed.",
+        "Backend enforces that a listing cannot be created/updated without a lease code (UUID string) and a split ratio (NLO/ULO).",
+        "Existing query methods that return listings (e.g., getActiveListings, getOwnerListings) continue to compile and return a LeaseListing shape consistent with the updated types."
       ]
     },
     {
-      "id": "REQ-28",
-      "text": "Ensure the dashboard create/update listing mutations still send valid values to the existing backend API even when Location/Area/Capacity are not entered by the user, by automatically supplying safe defaults in the dialog submit handler (e.g., Location=\"Unspecified\", Area=0, Capacity=0) while preserving the user-entered Listing ID, Lease Code, and Split Ratio.",
+      "id": "REQ-30",
+      "text": "Update the frontend dashboard “Create/Edit Lease Listing” flow so only Listing ID, Lease Code (UUID), and Split Ratio (NLO/ULO) are required inputs, and ensure the create/update mutations match the updated backend API (no required Location/Area/Capacity fields).",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-9",
-          "msg-12"
+          "msg-1"
         ],
         "quotes": [
-          "for  the create lease listing in the dashboard login the only fields required are : listing id, lease code and split ratio",
-          "please try again"
+          "only the lease code and split ratio are required in both the frontend and backend of this site"
         ]
       },
       "acceptanceCriteria": [
-        "Submitting the simplified form calls the existing actor methods (createLeaseListing/updateLeaseListing) without backend validation/trap errors due to missing Location/Area/Capacity.",
-        "Lease Code UUID validation still works (invalid UUIDs are rejected with a clear inline error).",
-        "Split Ratio validation still works (invalid ratios are rejected with a clear inline error)."
+        "frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx continues to require only Listing ID, Lease Code, and Split Ratio for submission.",
+        "frontend/src/hooks/useOwnerDashboard.ts create/update mutation function signatures and actor calls are updated to match the new backend method signatures (no required location/area/capacity arguments).",
+        "Creating and updating a listing from the dashboard succeeds without providing location/area/capacity and persists the lease code and split ratio."
+      ]
+    },
+    {
+      "id": "REQ-31",
+      "text": "Remove Location/Area/Capacity as required “headings” in the public lease browsing UI by not displaying those fields when they are absent, and ensure the listings and details pages still render cleanly with the new optional listing fields.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "the headings : location, area and capacity are not required"
+        ]
+      },
+      "acceptanceCriteria": [
+        "frontend/src/components/leases/LeaseListingCard.tsx does not show Location/Area/Capacity UI when the corresponding fields are not present on the listing.",
+        "frontend/src/pages/LeaseDetailsPage.tsx does not show Location/Area/Capacity sections when the corresponding fields are not present on the listing.",
+        "Lease Code and Split Ratio continue to display on Lease Details when present, using English labels and explicitly attributing split values to NLO then ULO."
       ]
     }
   ],
   "constraints": [
-    "Do not edit files under frontend/src/components/ui (compose existing UI components instead).",
-    "Maintain the single-actor backend architecture; no additional backend canisters/services."
+    "Backend must remain a single Motoko actor in backend/main.mo (no additional backend services).",
+    "Only create backend/migration.mo if a stable-state upgrade migration is truly required by the implementation.",
+    "Do not edit frontend immutable paths: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui."
   ],
   "nonGoals": [
-    "Fixing or changing the Internet Identity login flow (not requested in the latest message).",
-    "Changing the backend Candid/API signatures for createLeaseListing/updateLeaseListing."
+    "Fixing or redesigning the Internet Identity login flow or the 'Actor not available' error handling beyond what is necessary to update create/update listing calls.",
+    "Adding new listing fields beyond Lease Code and Split Ratio requirements.",
+    "Introducing any external database or non-ICP storage."
   ],
   "imageRequirements": {
     "required": [],

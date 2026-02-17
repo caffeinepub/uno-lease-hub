@@ -117,15 +117,15 @@ export default function LeaseOfferEditorDialog({ open, onOpenChange, listing }: 
             nlo: BigInt(match[1]),
             ulo: BigInt(match[2]),
           }
-        : null;
+        : { nlo: 0n, ulo: 1n };
 
       const data = {
         id: formData.id.trim(),
-        location: 'Unspecified',
-        area: 0n,
-        capacity: 0n,
         code: formData.code.trim(),
         splitRatio,
+        location: null,
+        area: null,
+        capacity: null,
       };
 
       if (isEditing) {

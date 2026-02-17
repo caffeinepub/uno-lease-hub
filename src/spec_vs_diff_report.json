@@ -1,32 +1,65 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-17T03:50:34.734Z",
-  "summary": "The diff shows LeaseOfferEditorDialog now only tracks/validates Listing ID, Lease Code (UUID), and Split Ratio, and it supplies safe defaults for location/area/capacity in the submit payload. However, due to truncation, it’s not fully verifiable that the primary form UI no longer renders Location/Area/Capacity inputs or that no “fill all required fields” validation remains elsewhere in the component.",
+  "generatedAt": "2026-02-17T04:12:03.247Z",
+  "summary": "Backend types were updated to make location/area/capacity optional, and frontend UI generally moved toward only requiring Lease Code + Split Ratio. However, backend create/update APIs still take location/area/capacity parameters (even if nullable), and frontend mutations still require/push those fields. Additionally, lease browsing UI uses `!== undefined` checks that may not correctly hide optional fields if the generated types use `null`/optionals. A migration module was added, which may be outside the request unless strictly required.",
   "missing_requirements": [
     {
-      "id": "REQ-27",
-      "requirement": "Remove Location, Area, and Capacity from the required validation and from the primary form UI (they may be omitted entirely or moved into an optional/advanced section that is not required to submit).",
-      "reason": "The state/validation shown only includes id/code/splitRatio, but the file is truncated before the JSX form fields, so it cannot be confirmed that Location/Area/Capacity inputs were removed (or moved to optional/advanced) from the rendered UI.",
+      "id": "REQ-29",
+      "requirement": "Backend create/update listing methods no longer require clients to provide location/area/capacity values to succeed; only Lease Code and Split Ratio are required.",
+      "reason": "`createLeaseListing` and `updateLeaseListing` still require `location`, `area`, and `capacity` parameters in their function signatures (even though their types are optional). This still forces clients to pass values (e.g., null/option) rather than omitting them entirely.",
       "evidence": [
-        "frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx (truncated; JSX portion not shown)"
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-29",
+      "requirement": "Backend enforces that a listing cannot be created/updated without a lease code (UUID string) and a split ratio (NLO/ULO).",
+      "reason": "The diff shows `code : Text` and `splitRatio : SplitRatio` are required in types and method parameters, but no validation/enforcement logic is shown (e.g., trapping on empty code or invalid split ratio). The migration also sets missing code to \"\" and splitRatio to `{nlo=0; ulo=1}`, which would allow listings without meaningful values.",
+      "evidence": [
+        "backend/main.mo",
+        "backend/migration.mo"
+      ]
+    },
+    {
+      "id": "REQ-30",
+      "requirement": "useOwnerDashboard create/update mutation function signatures and actor calls are updated to match the new backend method signatures (no required location/area/capacity arguments).",
+      "reason": "`useCreateLeaseListing` and `useUpdateLeaseListing` still require `location`, `area`, and `capacity` in the mutation argument object type and still pass them as positional arguments to the actor call.",
+      "evidence": [
+        "frontend/src/hooks/useOwnerDashboard.ts"
+      ]
+    },
+    {
+      "id": "REQ-31",
+      "requirement": "Public lease browsing UI does not display Location/Area/Capacity when corresponding fields are not present on the listing.",
+      "reason": "`LeaseListingCard` conditionally renders area/capacity using `listing.area !== undefined` and `listing.capacity !== undefined`. If the updated optional fields are represented as `null` (common in TS bindings for optional/variant/opt), these checks will still render the sections and call `.toString()` on `null`, causing incorrect display or runtime errors.",
+      "evidence": [
+        "frontend/src/components/leases/LeaseListingCard.tsx",
+        "frontend/src/pages/LeaseListingsPage.tsx"
       ]
     }
   ],
   "hallucinated_features": [
     {
-      "description": "Updates to project metadata/summaries unrelated to simplifying the Dashboard lease listing dialog.",
-      "reason": "The BuildRequest only asks for changes to the dashboard create/edit dialog behavior; modifying repository summary/state files is not requested.",
+      "description": "Added stable-state upgrade migration module and wired migration into the backend actor.",
+      "reason": "BuildRequest constrained creating `backend/migration.mo` only if truly required. The diff adds `backend/migration.mo` and imports/uses it in `backend/main.mo`, but the request did not explicitly require a migration implementation.",
       "evidence": [
-        "frontend-file-summaries.txt (modified)",
-        "project_state.json (modified)"
+        "backend/migration.mo",
+        "backend/main.mo"
       ]
     }
   ],
-  "confidence": 0.68,
+  "confidence": 0.64,
   "changed_files": [
+    "backend/main.mo",
+    "backend/migration.mo",
     "frontend-file-summaries.txt",
     "frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx",
+    "frontend/src/components/dashboard/OwnerOffersPanel.tsx",
+    "frontend/src/components/leases/LeaseListingCard.tsx",
+    "frontend/src/hooks/useOwnerDashboard.ts",
+    "frontend/src/pages/LeaseDetailsPage.tsx",
+    "frontend/src/pages/LeaseListingsPage.tsx",
     "project_state.json"
   ]
 }

@@ -27,11 +27,11 @@ export interface LeaseListing {
     id: string;
     status: LeaseStatus;
     owner: Principal;
-    area: bigint;
-    code?: string;
-    splitRatio?: SplitRatio;
-    capacity: bigint;
-    location: string;
+    area?: bigint;
+    code: string;
+    splitRatio: SplitRatio;
+    capacity?: bigint;
+    location?: string;
 }
 export enum LeaseStatus {
     active = "active",
@@ -55,7 +55,7 @@ export enum Variant_rejected_accepted {
 export interface backendInterface {
     archiveLeaseListing(id: string): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
-    createLeaseListing(id: string, location: string, area: bigint, capacity: bigint, code: string | null, splitRatio: SplitRatio | null): Promise<string>;
+    createLeaseListing(id: string, code: string, splitRatio: SplitRatio, location: string | null, area: bigint | null, capacity: bigint | null): Promise<string>;
     getActiveListings(): Promise<Array<LeaseListing>>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
@@ -67,6 +67,6 @@ export interface backendInterface {
     isCallerAdmin(): Promise<boolean>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
     submitLeaseRequest(listingId: string, info: string): Promise<string>;
-    updateLeaseListing(id: string, location: string, area: bigint, capacity: bigint, code: string | null, splitRatio: SplitRatio | null): Promise<void>;
+    updateLeaseListing(id: string, code: string, splitRatio: SplitRatio, location: string | null, area: bigint | null, capacity: bigint | null): Promise<void>;
     updateRequestStatus(requestId: string, newStatus: Variant_rejected_accepted): Promise<void>;
 }

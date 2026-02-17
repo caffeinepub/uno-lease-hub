@@ -1,12 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Simplify the dashboard Create/Edit Lease Listing dialog so users only need to enter Listing ID, Lease Code, and Split Ratio to submit successfully.
+**Goal:** Make Location, Area, and Capacity optional for lease listings end-to-end, requiring only Lease Code and Split Ratio in both backend and frontend.
 
 **Planned changes:**
-- Update `frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx` to make only Listing ID, Lease Code (UUID), and Split Ratio required user inputs.
-- Remove Location, Area, and Capacity from required validation and from the primary form UI (omit or move into an optional/advanced section that is not required for submission).
-- In the submit handler, automatically supply safe default values for Location/Area/Capacity when not provided (e.g., Location="Unspecified", Area=0, Capacity=0) while preserving user-entered Listing ID, Lease Code, and Split Ratio.
-- Keep inline validation for Lease Code UUID and Split Ratio, with clear English error messages.
+- Update the backend lease listing type and public Candid API so `location`, `area`, and `capacity` are optional, while enforcing `leaseCode` and `splitRatio` as required for create/update.
+- Update frontend dashboard create/edit listing flow and associated mutations to submit only required fields (Listing ID, Lease Code, Split Ratio) and match the updated backend method signatures.
+- Update public browsing UI (listing cards and details page) to hide Location/Area/Capacity sections when the fields are absent, while continuing to display Lease Code and Split Ratio (NLO then ULO).
 
-**User-visible outcome:** Users can create or edit a lease listing from the dashboard by entering only Listing ID, Lease Code, and Split Ratio, without being blocked by missing Location/Area/Capacity.
+**User-visible outcome:** Users can create and edit lease listings by providing only Lease Code and Split Ratio, and public listing pages no longer show Location/Area/Capacity headings when those values aren’t provided.

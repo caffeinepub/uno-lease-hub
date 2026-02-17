@@ -2,10 +2,12 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-update-the-dashboard-create-lease-listing-edit-lease-listing-dialog-frontend-src-components-dashboard-leaseoffereditordialog-tsx-so-the-only-user-input-required-fields-are-listing-id-lease-code-uuid-string-and-split-ratio-nlo-ulo-e-g-60-40-remove-location-area-and-capacity-from-the-required-validation-and-from-the-primary-form-ui-they-may-be-omitted-entirely-or-moved-into-an-optional-advanced-section-that-is-not-required-to-submit",
-      "featureTitle": "Update the Dashboard \"Create Lease Listing\" / \"Edit Lease Listing\" dialog (frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx) so the only user-input required fields are: Listing ID, Lease Code (UUID string), and Split Ratio (NLO/ULO, e.g., 60/40). Remove Location, Area, and Capacity from the required validation and from the primary form UI (they may be omitted entirely or moved into an optional/advanced section that is not required to submit).",
+      "featureId": "feature-update-the-frontend-dashboard-create-edit-lease-listing-flow-so-only-listing-id-lease-code-uuid-and-split-ratio-nlo-ulo-are-required-inputs-and-ensure-the-create-update-mutations-match-the-updated-backend-api-no-required-location-area-capacity-fields",
+      "featureTitle": "Update the frontend dashboard “Create/Edit Lease Listing” flow so only Listing ID, Lease Code (UUID), and Split Ratio (NLO/ULO) are required inputs, and ensure the create/update mutations match the updated backend API (no required Location/Area/Capacity fields).",
       "files": [
-        "frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx"
+        "frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx",
+        "frontend/src/components/dashboard/OwnerOffersPanel.tsx",
+        "frontend/src/hooks/useOwnerDashboard.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -16,15 +18,17 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-27"
+        "REQ-30"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-ensure-the-dashboard-create-update-listing-mutations-still-send-valid-values-to-the-existing-backend-api-even-when-location-area-capacity-are-not-entered-by-the-user-by-automatically-supplying-safe-defaults-in-the-dialog-submit-handler-e-g-location-unspecified-area-0-capacity-0-while-preserving-the-user-entered-listing-id-lease-code-and-split-ratio",
-      "featureTitle": "Ensure the dashboard create/update listing mutations still send valid values to the existing backend API even when Location/Area/Capacity are not entered by the user, by automatically supplying safe defaults in the dialog submit handler (e.g., Location=\"Unspecified\", Area=0, Capacity=0) while preserving the user-entered Listing ID, Lease Code, and Split Ratio.",
+      "featureId": "feature-remove-location-area-capacity-as-required-headings-in-the-public-lease-browsing-ui-by-not-displaying-those-fields-when-they-are-absent-and-ensure-the-listings-and-details-pages-still-render-cleanly-with-the-new-optional-listing-fields",
+      "featureTitle": "Remove Location/Area/Capacity as required “headings” in the public lease browsing UI by not displaying those fields when they are absent, and ensure the listings and details pages still render cleanly with the new optional listing fields.",
       "files": [
-        "frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx"
+        "frontend/src/components/leases/LeaseListingCard.tsx",
+        "frontend/src/pages/LeaseDetailsPage.tsx",
+        "frontend/src/pages/LeaseListingsPage.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -35,7 +39,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-28"
+        "REQ-31"
       ],
       "confidence": "high"
     }

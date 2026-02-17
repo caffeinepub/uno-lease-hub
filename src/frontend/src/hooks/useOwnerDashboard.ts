@@ -9,21 +9,21 @@ export function useCreateLeaseListing() {
   return useMutation({
     mutationFn: async ({
       id,
+      code,
+      splitRatio,
       location,
       area,
       capacity,
-      code,
-      splitRatio,
     }: {
       id: string;
-      location: string;
-      area: bigint;
-      capacity: bigint;
-      code: string | null;
-      splitRatio: SplitRatio | null;
+      code: string;
+      splitRatio: SplitRatio;
+      location: string | null;
+      area: bigint | null;
+      capacity: bigint | null;
     }) => {
       if (!actor) throw new Error('Actor not available');
-      return actor.createLeaseListing(id, location, area, capacity, code, splitRatio);
+      return actor.createLeaseListing(id, code, splitRatio, location, area, capacity);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['ownerListings'] });
@@ -39,21 +39,21 @@ export function useUpdateLeaseListing() {
   return useMutation({
     mutationFn: async ({
       id,
+      code,
+      splitRatio,
       location,
       area,
       capacity,
-      code,
-      splitRatio,
     }: {
       id: string;
-      location: string;
-      area: bigint;
-      capacity: bigint;
-      code: string | null;
-      splitRatio: SplitRatio | null;
+      code: string;
+      splitRatio: SplitRatio;
+      location: string | null;
+      area: bigint | null;
+      capacity: bigint | null;
     }) => {
       if (!actor) throw new Error('Actor not available');
-      return actor.updateLeaseListing(id, location, area, capacity, code, splitRatio);
+      return actor.updateLeaseListing(id, code, splitRatio, location, area, capacity);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['ownerListings'] });
