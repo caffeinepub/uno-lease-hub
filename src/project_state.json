@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 13,
+  "projectStateVersion": 15,
   "summary": "Plan a custom, mobile-compatible website running on the ICP blockchain for UNO/ULO lease listings and lease-code distribution, using unitynodes.club as UI inspiration but aligning product/content guidance with https://unitynodes.io (Unity mobile app is not ICP-powered). The site should clearly communicate there is a single UNO/admin offering ULO lease codes, and ULO users only browse listings and copy lease codes for use in the Unity App (no additional ULO functionality).",
   "architectural_notes": [
     "Target deployment/runtime: ICP blockchain (Internet Computer).",
@@ -20,7 +20,6 @@
     "Draft environment may fail to load some images and YouTube embeds, causing media not to appear in draft previews."
   ],
   "isFixRequest": false,
-  "imageRequirements": "## Required Images\n- UnityNodes logo wordmark (unitynodes-logo-wordmark.dim_1200x300.png)\n- UnityNodes logo icon/mark (unitynodes-logo-mark.dim_512x512.png)\n- Google Play badge graphic (google-play-badge.dim_512x152.png)\n- Apple App Store badge graphic (app-store-badge.dim_512x152.png)",
   "existing_features": [
     {
       "id": "feature-create-a-public-facing-website-ui-inspired-by-https-unitynodes-club-layout-and-interaction-patterns-but-implemented-as-a-standalone-react-app-running-on-the-internet-computer",
@@ -173,6 +172,14 @@
         "REQ-20"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-remove-the-list-your-lease-call-to-action-from-the-home-landing-page-hero-section-so-the-home-page-no-longer-offers-a-direct-list-your-lease-path-to-the-dashboard",
+      "title": "Remove the \"List Your Lease\" call-to-action from the Home/Landing page hero section so the Home page no longer offers a direct \"List Your Lease\" path to the dashboard.",
+      "reqIds": [
+        "REQ-21"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -241,6 +248,12 @@
     {
       "id": "AR-13",
       "summary": "Add prominent onsite links/buttons to download the Unity Network App from Google Play and Apple App Store",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-14",
+      "summary": "Remove the \"List your lease\" call-to-action/section from the Home (Landing) page",
       "reqIds": [],
       "status": "pending"
     }

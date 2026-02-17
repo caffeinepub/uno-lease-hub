@@ -25,15 +25,12 @@ export default function LandingPage() {
             <p className="mb-6 sm:mb-8 text-base sm:text-lg text-muted-foreground md:text-xl px-4">
               A decentralized platform for managing Unity License Operator lease listings and requests, powered by the Internet Computer.
             </p>
-            <div className="flex flex-col gap-3 sm:gap-4 sm:flex-row sm:justify-center px-4">
+            <div className="flex justify-center px-4">
               <Button asChild size="lg" className="w-full sm:w-auto">
                 <Link to="/listings">
                   Browse Available Leases
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
-              </Button>
-              <Button asChild variant="outline" size="lg" className="w-full sm:w-auto">
-                <Link to="/dashboard">List Your Lease</Link>
               </Button>
             </div>
           </div>

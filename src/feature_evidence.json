@@ -2,10 +2,9 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-add-a-prominent-mobile-responsive-get-the-unity-network-app-section-that-links-to-the-official-app-store-pages-google-play-https-play-google-com-store-apps-details-id-io-unitynodes-unityapp-and-apple-app-store-https-apps-apple-com-us-app-unity-network-app-id6755482738-place-this-section-on-the-public-site-at-minimum-on-the-home-landing-page-and-ensure-the-links-open-in-a-new-tab-with-proper-rel-attributes",
-      "featureTitle": "Add a prominent, mobile-responsive \"Get the Unity Network App\" section that links to the official app store pages: Google Play https://play.google.com/store/apps/details?id=io.unitynodes.unityapp and Apple App Store https://apps.apple.com/us/app/unity-network-app/id6755482738. Place this section on the public site (at minimum on the Home/Landing page) and ensure the links open in a new tab with proper rel attributes.",
+      "featureId": "feature-remove-the-list-your-lease-call-to-action-from-the-home-landing-page-hero-section-so-the-home-page-no-longer-offers-a-direct-list-your-lease-path-to-the-dashboard",
+      "featureTitle": "Remove the \"List Your Lease\" call-to-action from the Home/Landing page hero section so the Home page no longer offers a direct \"List Your Lease\" path to the dashboard.",
       "files": [
-        "frontend/src/components/marketing/GetUnityNetworkAppSection.tsx",
         "frontend/src/pages/LandingPage.tsx"
       ],
       "components": [
@@ -17,46 +16,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-18"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-download-and-add-unitynodes-media-kit-logo-assets-from-https-unitynodes-io-media-kit-html-into-the-frontend-as-static-public-assets-prioritizing-the-available-logos-and-use-them-in-the-ui-where-appropriate-e-g-within-the-new-download-section-and-or-header-footer-without-serving-these-images-via-the-backend",
-      "featureTitle": "Download and add UnityNodes media-kit logo assets from https://unitynodes.io/media-kit.html into the frontend as static public assets, prioritizing the available logos, and use them in the UI where appropriate (e.g., within the new download section and/or header/footer), without serving these images via the backend.",
-      "files": [
-        "frontend/src/components/marketing/GetUnityNetworkAppSection.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-19"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-update-user-facing-text-around-the-app-download-links-and-any-displayed-media-kit-logos-to-be-in-english-and-to-clearly-indicate-these-are-external-app-store-destinations-no-implication-that-the-unity-mobile-app-itself-runs-on-icp",
-      "featureTitle": "Update user-facing text around the app-download links and any displayed media-kit logos to be in English and to clearly indicate these are external app store destinations (no implication that the Unity mobile app itself runs on ICP).",
-      "files": [
-        "frontend/src/components/marketing/GetUnityNetworkAppSection.tsx",
-        "frontend/src/pages/LandingPage.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-20"
+        "REQ-21"
       ],
       "confidence": "high"
     }

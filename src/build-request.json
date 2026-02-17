@@ -1,80 +1,39 @@
 {
   "kind": "build_request",
-  "title": "Add onsite Unity Network App download links and incorporate UnityNodes media-kit logos",
+  "title": "Remove “List Your Lease” CTA from Home page",
   "projectName": "UNO Lease Hub",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-18",
-      "text": "Add a prominent, mobile-responsive \"Get the Unity Network App\" section that links to the official app store pages: Google Play https://play.google.com/store/apps/details?id=io.unitynodes.unityapp and Apple App Store https://apps.apple.com/us/app/unity-network-app/id6755482738. Place this section on the public site (at minimum on the Home/Landing page) and ensure the links open in a new tab with proper rel attributes.",
+      "id": "REQ-21",
+      "text": "Remove the \"List Your Lease\" call-to-action from the Home/Landing page hero section so the Home page no longer offers a direct \"List Your Lease\" path to the dashboard.",
       "target": "frontend",
       "source": {
         "messageIds": [
           "msg-4"
         ],
         "quotes": [
-          "https://play.google.com/store/apps/details?id=io.unitynodes.unityapp and https://apps.apple.com/us/app/unity-network-app/id6755482738 should be offered onsite"
+          "remove the list your lease on the home page"
         ]
       },
       "acceptanceCriteria": [
-        "Landing page displays a clearly labeled section offering both Google Play and Apple App Store links.",
-        "Both links use the exact URLs provided and open in a new tab (target=\"_blank\") with rel=\"noopener noreferrer\".",
-        "Section layout is responsive on small screens (buttons/badges stack and remain readable/tappable)."
-      ]
-    },
-    {
-      "id": "REQ-19",
-      "text": "Download and add UnityNodes media-kit logo assets from https://unitynodes.io/media-kit.html into the frontend as static public assets, prioritizing the available logos, and use them in the UI where appropriate (e.g., within the new download section and/or header/footer), without serving these images via the backend.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-4"
-        ],
-        "quotes": [
-          "also some images from https://unitynodes.io/media-kit.html should be downloaded onto the site especially the available logos"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Logos from https://unitynodes.io/media-kit.html are added to the repo under a public static assets directory (frontend/public/...).",
-        "The site renders at least one of the downloaded logo assets in a public-facing section (e.g., the download section).",
-        "No backend endpoints are added/used to serve these images."
-      ]
-    },
-    {
-      "id": "REQ-20",
-      "text": "Update user-facing text around the app-download links and any displayed media-kit logos to be in English and to clearly indicate these are external app store destinations (no implication that the Unity mobile app itself runs on ICP).",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-4"
-        ],
-        "quotes": [
-          "should be offered onsite"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Download section includes English copy that makes it clear the user is going to external app store pages.",
-        "Copy does not state or imply the Unity mobile app is ICP-powered.",
-        "All added/updated user-facing text for this change is English."
+        "On the Home page (frontend/src/pages/LandingPage.tsx), the hero CTA row no longer contains a button/link with the label \"List Your Lease\".",
+        "The remaining hero CTA(s) (e.g., \"Browse Available Leases\") remain visually aligned and responsive on mobile and desktop.",
+        "No other pages/routes are removed or changed as part of this update."
       ]
     }
   ],
   "constraints": [
-    "Do not edit files under frontend/src/components/ui (read-only UI components).",
-    "Do not edit immutable paths: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui.",
-    "Serve downloaded media-kit images as static frontend assets (frontend/public/...) only; do not serve images via the Motoko backend."
+    "Frontend immutable paths must not be edited: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui (compose only).",
+    "Keep all user-facing text in English."
   ],
   "nonGoals": [
-    "Do not implement deep-linking into native apps or any install/referral tracking.",
-    "Do not add third-party analytics or external SDK integrations related to the app store links."
+    "Do not remove or disable the /dashboard route or any dashboard functionality.",
+    "Do not change backend logic, data models, or access control.",
+    "Do not add new marketing sections or redesign the Landing page beyond removing the specified CTA."
   ],
   "imageRequirements": {
-    "required": [
-      "UnityNodes logo wordmark (unitynodes-logo-wordmark.dim_1200x300.png)",
-      "UnityNodes logo icon/mark (unitynodes-logo-mark.dim_512x512.png)",
-      "Google Play badge graphic (google-play-badge.dim_512x152.png)",
-      "Apple App Store badge graphic (app-store-badge.dim_512x152.png)"
-    ],
+    "required": [],
     "edits": []
   }
 }
