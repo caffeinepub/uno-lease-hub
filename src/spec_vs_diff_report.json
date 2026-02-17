@@ -1,65 +1,29 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-17T04:12:03.247Z",
-  "summary": "Backend types were updated to make location/area/capacity optional, and frontend UI generally moved toward only requiring Lease Code + Split Ratio. However, backend create/update APIs still take location/area/capacity parameters (even if nullable), and frontend mutations still require/push those fields. Additionally, lease browsing UI uses `!== undefined` checks that may not correctly hide optional fields if the generated types use `null`/optionals. A migration module was added, which may be outside the request unless strictly required.",
-  "missing_requirements": [
-    {
-      "id": "REQ-29",
-      "requirement": "Backend create/update listing methods no longer require clients to provide location/area/capacity values to succeed; only Lease Code and Split Ratio are required.",
-      "reason": "`createLeaseListing` and `updateLeaseListing` still require `location`, `area`, and `capacity` parameters in their function signatures (even though their types are optional). This still forces clients to pass values (e.g., null/option) rather than omitting them entirely.",
-      "evidence": [
-        "backend/main.mo"
-      ]
-    },
-    {
-      "id": "REQ-29",
-      "requirement": "Backend enforces that a listing cannot be created/updated without a lease code (UUID string) and a split ratio (NLO/ULO).",
-      "reason": "The diff shows `code : Text` and `splitRatio : SplitRatio` are required in types and method parameters, but no validation/enforcement logic is shown (e.g., trapping on empty code or invalid split ratio). The migration also sets missing code to \"\" and splitRatio to `{nlo=0; ulo=1}`, which would allow listings without meaningful values.",
-      "evidence": [
-        "backend/main.mo",
-        "backend/migration.mo"
-      ]
-    },
-    {
-      "id": "REQ-30",
-      "requirement": "useOwnerDashboard create/update mutation function signatures and actor calls are updated to match the new backend method signatures (no required location/area/capacity arguments).",
-      "reason": "`useCreateLeaseListing` and `useUpdateLeaseListing` still require `location`, `area`, and `capacity` in the mutation argument object type and still pass them as positional arguments to the actor call.",
-      "evidence": [
-        "frontend/src/hooks/useOwnerDashboard.ts"
-      ]
-    },
-    {
-      "id": "REQ-31",
-      "requirement": "Public lease browsing UI does not display Location/Area/Capacity when corresponding fields are not present on the listing.",
-      "reason": "`LeaseListingCard` conditionally renders area/capacity using `listing.area !== undefined` and `listing.capacity !== undefined`. If the updated optional fields are represented as `null` (common in TS bindings for optional/variant/opt), these checks will still render the sections and call `.toString()` on `null`, causing incorrect display or runtime errors.",
-      "evidence": [
-        "frontend/src/components/leases/LeaseListingCard.tsx",
-        "frontend/src/pages/LeaseListingsPage.tsx"
-      ]
-    }
-  ],
+  "generatedAt": "2026-02-17T05:00:27.066Z",
+  "summary": "REQ-37 appears implemented: the unauthenticated label in LoginButton is changed to \"Admin Login\" while keeping \"Logout\" and \"Logging in...\". However, two additional files were modified (frontend-file-summaries.txt and project_state.json) that were not requested for this text-only UI change.",
+  "missing_requirements": [],
   "hallucinated_features": [
     {
-      "description": "Added stable-state upgrade migration module and wired migration into the backend actor.",
-      "reason": "BuildRequest constrained creating `backend/migration.mo` only if truly required. The diff adds `backend/migration.mo` and imports/uses it in `backend/main.mo`, but the request did not explicitly require a migration implementation.",
+      "description": "Updated generated/metadata documentation file frontend-file-summaries.txt",
+      "reason": "BuildRequest only asked to change the unauthenticated login button label in frontend/src/components/auth/LoginButton.tsx and explicitly stated not to change other copy; no requirement mentioned updating summary/metadata files.",
       "evidence": [
-        "backend/migration.mo",
-        "backend/main.mo"
+        "frontend-file-summaries.txt"
+      ]
+    },
+    {
+      "description": "Updated project state metadata (project_state.json)",
+      "reason": "BuildRequest did not request any project state/schema/version summary updates; this goes beyond the specified text-only UI label change.",
+      "evidence": [
+        "project_state.json"
       ]
     }
   ],
-  "confidence": 0.64,
+  "confidence": 0.74,
   "changed_files": [
-    "backend/main.mo",
-    "backend/migration.mo",
     "frontend-file-summaries.txt",
-    "frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx",
-    "frontend/src/components/dashboard/OwnerOffersPanel.tsx",
-    "frontend/src/components/leases/LeaseListingCard.tsx",
-    "frontend/src/hooks/useOwnerDashboard.ts",
-    "frontend/src/pages/LeaseDetailsPage.tsx",
-    "frontend/src/pages/LeaseListingsPage.tsx",
+    "frontend/src/components/auth/LoginButton.tsx",
     "project_state.json"
   ]
 }

@@ -15,13 +15,13 @@ export const UserRole = IDL.Variant({
 });
 export const SplitRatio = IDL.Record({ 'nlo' : IDL.Nat, 'ulo' : IDL.Nat });
 export const LeaseStatus = IDL.Variant({
-  'active' : IDL.Null,
+  'available' : IDL.Null,
   'archived' : IDL.Null,
+  'unavailable' : IDL.Null,
 });
 export const LeaseListing = IDL.Record({
   'id' : IDL.Text,
   'status' : LeaseStatus,
-  'owner' : IDL.Principal,
   'area' : IDL.Opt(IDL.Nat),
   'code' : IDL.Text,
   'splitRatio' : SplitRatio,
@@ -64,6 +64,7 @@ export const idlService = IDL.Service({
   'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
   'getOwnerListings' : IDL.Func([], [IDL.Vec(LeaseListing)], ['query']),
+  'getPublicListings' : IDL.Func([], [IDL.Vec(LeaseListing)], ['query']),
   'getRequestsForListing' : IDL.Func(
       [IDL.Text],
       [IDL.Vec(LeaseRequest)],
@@ -79,6 +80,7 @@ export const idlService = IDL.Service({
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
   'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
   'submitLeaseRequest' : IDL.Func([IDL.Text, IDL.Text], [IDL.Text], []),
+  'updateLeaseAvailability' : IDL.Func([IDL.Text, LeaseStatus], [], []),
   'updateLeaseListing' : IDL.Func(
       [
         IDL.Text,
@@ -108,13 +110,13 @@ export const idlFactory = ({ IDL }) => {
   });
   const SplitRatio = IDL.Record({ 'nlo' : IDL.Nat, 'ulo' : IDL.Nat });
   const LeaseStatus = IDL.Variant({
-    'active' : IDL.Null,
+    'available' : IDL.Null,
     'archived' : IDL.Null,
+    'unavailable' : IDL.Null,
   });
   const LeaseListing = IDL.Record({
     'id' : IDL.Text,
     'status' : LeaseStatus,
-    'owner' : IDL.Principal,
     'area' : IDL.Opt(IDL.Nat),
     'code' : IDL.Text,
     'splitRatio' : SplitRatio,
@@ -157,6 +159,7 @@ export const idlFactory = ({ IDL }) => {
     'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
     'getOwnerListings' : IDL.Func([], [IDL.Vec(LeaseListing)], ['query']),
+    'getPublicListings' : IDL.Func([], [IDL.Vec(LeaseListing)], ['query']),
     'getRequestsForListing' : IDL.Func(
         [IDL.Text],
         [IDL.Vec(LeaseRequest)],
@@ -172,6 +175,7 @@ export const idlFactory = ({ IDL }) => {
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
     'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
     'submitLeaseRequest' : IDL.Func([IDL.Text, IDL.Text], [IDL.Text], []),
+    'updateLeaseAvailability' : IDL.Func([IDL.Text, LeaseStatus], [], []),
     'updateLeaseListing' : IDL.Func(
         [
           IDL.Text,

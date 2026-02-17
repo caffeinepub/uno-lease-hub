@@ -1,11 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Make Location, Area, and Capacity optional for lease listings end-to-end, requiring only Lease Code and Split Ratio in both backend and frontend.
+**Goal:** Change the unauthenticated top navigation login button label to “Admin Login” while keeping other authentication button states unchanged.
 
 **Planned changes:**
-- Update the backend lease listing type and public Candid API so `location`, `area`, and `capacity` are optional, while enforcing `leaseCode` and `splitRatio` as required for create/update.
-- Update frontend dashboard create/edit listing flow and associated mutations to submit only required fields (Listing ID, Lease Code, Split Ratio) and match the updated backend method signatures.
-- Update public browsing UI (listing cards and details page) to hide Location/Area/Capacity sections when the fields are absent, while continuing to display Lease Code and Split Ratio (NLO then ULO).
+- Update `frontend/src/components/auth/LoginButton.tsx` so the unauthenticated label displays “Admin Login” instead of “Login”.
+- Preserve the existing authenticated label (“Logout”) and in-progress label (“Logging in...”).
+- Ensure no changes are made to backend/auth behavior or to any files under `frontend/src/components/ui`.
 
-**User-visible outcome:** Users can create and edit lease listings by providing only Lease Code and Split Ratio, and public listing pages no longer show Location/Area/Capacity headings when those values aren’t provided.
+**User-visible outcome:** When signed out, the top navigation authentication button reads “Admin Login”; when signed in it still reads “Logout”, and during sign-in it still reads “Logging in...”.

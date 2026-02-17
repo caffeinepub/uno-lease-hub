@@ -108,7 +108,6 @@ export interface UserProfile {
 export interface LeaseListing {
     id: string;
     status: LeaseStatus;
-    owner: Principal;
     area?: bigint;
     code: string;
     splitRatio: SplitRatio;
@@ -116,8 +115,9 @@ export interface LeaseListing {
     location?: string;
 }
 export enum LeaseStatus {
-    active = "active",
-    archived = "archived"
+    available = "available",
+    archived = "archived",
+    unavailable = "unavailable"
 }
 export enum UserRole {
     admin = "admin",
@@ -143,6 +143,7 @@ export interface backendInterface {
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
     getOwnerListings(): Promise<Array<LeaseListing>>;
+    getPublicListings(): Promise<Array<LeaseListing>>;
     getRequestsForListing(listingId: string): Promise<Array<LeaseRequest>>;
     getRequestsForOwner(): Promise<Array<LeaseRequest>>;
     getTenantRequests(): Promise<Array<LeaseRequest>>;
@@ -150,6 +151,7 @@ export interface backendInterface {
     isCallerAdmin(): Promise<boolean>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
     submitLeaseRequest(listingId: string, info: string): Promise<string>;
+    updateLeaseAvailability(id: string, status: LeaseStatus): Promise<void>;
     updateLeaseListing(id: string, code: string, splitRatio: SplitRatio, location: string | null, area: bigint | null, capacity: bigint | null): Promise<void>;
     updateRequestStatus(requestId: string, newStatus: Variant_rejected_accepted): Promise<void>;
 }
@@ -268,6 +270,20 @@ export class Backend implements backendInterface {
             return from_candid_vec_n5(this._uploadFile, this._downloadFile, result);
         }
     }
+    async getPublicListings(): Promise<Array<LeaseListing>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getPublicListings();
+                return from_candid_vec_n5(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getPublicListings();
+            return from_candid_vec_n5(this._uploadFile, this._downloadFile, result);
+        }
+    }
     async getRequestsForListing(arg0: string): Promise<Array<LeaseRequest>> {
         if (this.processError) {
             try {
@@ -366,6 +382,20 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+    async updateLeaseAvailability(arg0: string, arg1: LeaseStatus): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.updateLeaseAvailability(arg0, to_candid_LeaseStatus_n19(this._uploadFile, this._downloadFile, arg1));
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.updateLeaseAvailability(arg0, to_candid_LeaseStatus_n19(this._uploadFile, this._downloadFile, arg1));
+            return result;
+        }
+    }
     async updateLeaseListing(arg0: string, arg1: string, arg2: SplitRatio, arg3: string | null, arg4: bigint | null, arg5: bigint | null): Promise<void> {
         if (this.processError) {
             try {
@@ -383,14 +413,14 @@ export class Backend implements backendInterface {
     async updateRequestStatus(arg0: string, arg1: Variant_rejected_accepted): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.updateRequestStatus(arg0, to_candid_variant_n19(this._uploadFile, this._downloadFile, arg1));
+                const result = await this.actor.updateRequestStatus(arg0, to_candid_variant_n21(this._uploadFile, this._downloadFile, arg1));
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.updateRequestStatus(arg0, to_candid_variant_n19(this._uploadFile, this._downloadFile, arg1));
+            const result = await this.actor.updateRequestStatus(arg0, to_candid_variant_n21(this._uploadFile, this._downloadFile, arg1));
             return result;
         }
     }
@@ -451,7 +481,6 @@ function from_candid_record_n17(_uploadFile: (file: ExternalBlob) => Promise<Uin
 function from_candid_record_n7(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     id: string;
     status: _LeaseStatus;
-    owner: Principal;
     area: [] | [bigint];
     code: string;
     splitRatio: _SplitRatio;
@@ -460,7 +489,6 @@ function from_candid_record_n7(_uploadFile: (file: ExternalBlob) => Promise<Uint
 }): {
     id: string;
     status: LeaseStatus;
-    owner: Principal;
     area?: bigint;
     code: string;
     splitRatio: SplitRatio;
@@ -470,7 +498,6 @@ function from_candid_record_n7(_uploadFile: (file: ExternalBlob) => Promise<Uint
     return {
         id: value.id,
         status: from_candid_LeaseStatus_n8(_uploadFile, _downloadFile, value.status),
-        owner: value.owner,
         area: record_opt_to_undefined(from_candid_opt_n10(_uploadFile, _downloadFile, value.area)),
         code: value.code,
         splitRatio: value.splitRatio,
@@ -499,17 +526,22 @@ function from_candid_variant_n18(_uploadFile: (file: ExternalBlob) => Promise<Ui
     return "cancelled" in value ? Variant_cancelled_pending_rejected_accepted.cancelled : "pending" in value ? Variant_cancelled_pending_rejected_accepted.pending : "rejected" in value ? Variant_cancelled_pending_rejected_accepted.rejected : "accepted" in value ? Variant_cancelled_pending_rejected_accepted.accepted : value;
 }
 function from_candid_variant_n9(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
-    active: null;
+    available: null;
 } | {
     archived: null;
+} | {
+    unavailable: null;
 }): LeaseStatus {
-    return "active" in value ? LeaseStatus.active : "archived" in value ? LeaseStatus.archived : value;
+    return "available" in value ? LeaseStatus.available : "archived" in value ? LeaseStatus.archived : "unavailable" in value ? LeaseStatus.unavailable : value;
 }
 function from_candid_vec_n15(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_LeaseRequest>): Array<LeaseRequest> {
     return value.map((x)=>from_candid_LeaseRequest_n16(_uploadFile, _downloadFile, x));
 }
 function from_candid_vec_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_LeaseListing>): Array<LeaseListing> {
     return value.map((x)=>from_candid_LeaseListing_n6(_uploadFile, _downloadFile, x));
+}
+function to_candid_LeaseStatus_n19(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: LeaseStatus): _LeaseStatus {
+    return to_candid_variant_n20(_uploadFile, _downloadFile, value);
 }
 function to_candid_UserRole_n1(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UserRole): _UserRole {
     return to_candid_variant_n2(_uploadFile, _downloadFile, value);
@@ -519,17 +551,6 @@ function to_candid_opt_n3(_uploadFile: (file: ExternalBlob) => Promise<Uint8Arra
 }
 function to_candid_opt_n4(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: bigint | null): [] | [bigint] {
     return value === null ? candid_none() : candid_some(value);
-}
-function to_candid_variant_n19(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Variant_rejected_accepted): {
-    rejected: null;
-} | {
-    accepted: null;
-} {
-    return value == Variant_rejected_accepted.rejected ? {
-        rejected: null
-    } : value == Variant_rejected_accepted.accepted ? {
-        accepted: null
-    } : value;
 }
 function to_candid_variant_n2(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UserRole): {
     admin: null;
@@ -544,6 +565,32 @@ function to_candid_variant_n2(_uploadFile: (file: ExternalBlob) => Promise<Uint8
         user: null
     } : value == UserRole.guest ? {
         guest: null
+    } : value;
+}
+function to_candid_variant_n20(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: LeaseStatus): {
+    available: null;
+} | {
+    archived: null;
+} | {
+    unavailable: null;
+} {
+    return value == LeaseStatus.available ? {
+        available: null
+    } : value == LeaseStatus.archived ? {
+        archived: null
+    } : value == LeaseStatus.unavailable ? {
+        unavailable: null
+    } : value;
+}
+function to_candid_variant_n21(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Variant_rejected_accepted): {
+    rejected: null;
+} | {
+    accepted: null;
+} {
+    return value == Variant_rejected_accepted.rejected ? {
+        rejected: null
+    } : value == Variant_rejected_accepted.accepted ? {
+        accepted: null
     } : value;
 }
 export interface CreateActorOptions {

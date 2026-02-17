@@ -1,74 +1,35 @@
 {
   "kind": "build_request",
-  "title": "Make location/area/capacity optional; require only lease code + split ratio end-to-end",
-  "projectName": "Lease Code Listings",
+  "title": "Rename login button to Admin Login",
+  "projectName": "ULO Lease Hub",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-29",
-      "text": "Update the backend lease listing data model and public Candid API so that Location, Area, and Capacity are optional/not required, and only Lease Code and Split Ratio are required for lease listings.",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Hi... for lease listings .... the headings : location, area and capacity are not required....only the lease code and split ratio are required in both the frontend and backend of this site"
-        ]
-      },
-      "acceptanceCriteria": [
-        "In backend/main.mo, LeaseListing fields location/area/capacity are no longer required fields (i.e., they are optional or otherwise not mandatory to provide when creating/updating a listing).",
-        "Backend create/update listing methods no longer require clients to provide location/area/capacity values to succeed.",
-        "Backend enforces that a listing cannot be created/updated without a lease code (UUID string) and a split ratio (NLO/ULO).",
-        "Existing query methods that return listings (e.g., getActiveListings, getOwnerListings) continue to compile and return a LeaseListing shape consistent with the updated types."
-      ]
-    },
-    {
-      "id": "REQ-30",
-      "text": "Update the frontend dashboard “Create/Edit Lease Listing” flow so only Listing ID, Lease Code (UUID), and Split Ratio (NLO/ULO) are required inputs, and ensure the create/update mutations match the updated backend API (no required Location/Area/Capacity fields).",
+      "id": "REQ-37",
+      "text": "Update the top navigation authentication button label so that when the user is not authenticated it displays \"Admin Login\" (or \"Admin Only\") instead of \"Login\", while keeping the authenticated state label as \"Logout\" and the in-progress label as \"Logging in...\".",
       "target": "frontend",
       "source": {
         "messageIds": [
           "msg-1"
         ],
         "quotes": [
-          "only the lease code and split ratio are required in both the frontend and backend of this site"
+          "since I am the only user to login to the site ...can the login button say Admin login or Admin only instead of login"
         ]
       },
       "acceptanceCriteria": [
-        "frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx continues to require only Listing ID, Lease Code, and Split Ratio for submission.",
-        "frontend/src/hooks/useOwnerDashboard.ts create/update mutation function signatures and actor calls are updated to match the new backend method signatures (no required location/area/capacity arguments).",
-        "Creating and updating a listing from the dashboard succeeds without providing location/area/capacity and persists the lease code and split ratio."
-      ]
-    },
-    {
-      "id": "REQ-31",
-      "text": "Remove Location/Area/Capacity as required “headings” in the public lease browsing UI by not displaying those fields when they are absent, and ensure the listings and details pages still render cleanly with the new optional listing fields.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "the headings : location, area and capacity are not required"
-        ]
-      },
-      "acceptanceCriteria": [
-        "frontend/src/components/leases/LeaseListingCard.tsx does not show Location/Area/Capacity UI when the corresponding fields are not present on the listing.",
-        "frontend/src/pages/LeaseDetailsPage.tsx does not show Location/Area/Capacity sections when the corresponding fields are not present on the listing.",
-        "Lease Code and Split Ratio continue to display on Lease Details when present, using English labels and explicitly attributing split values to NLO then ULO."
+        "When not authenticated, the button rendered by frontend/src/components/auth/LoginButton.tsx displays \"Admin Login\" (or \"Admin Only\") instead of \"Login\".",
+        "When authenticated, the button still displays \"Logout\".",
+        "While the login action is in progress, the button still displays \"Logging in...\".",
+        "No backend/Candid changes are made for this text-only change."
       ]
     }
   ],
   "constraints": [
-    "Backend must remain a single Motoko actor in backend/main.mo (no additional backend services).",
-    "Only create backend/migration.mo if a stable-state upgrade migration is truly required by the implementation.",
-    "Do not edit frontend immutable paths: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui."
+    "Do not edit any files under frontend/src/components/ui (read-only UI components)."
   ],
   "nonGoals": [
-    "Fixing or redesigning the Internet Identity login flow or the 'Actor not available' error handling beyond what is necessary to update create/update listing calls.",
-    "Adding new listing fields beyond Lease Code and Split Ratio requirements.",
-    "Introducing any external database or non-ICP storage."
+    "Do not change authentication behavior, admin access control, or Internet Identity configuration.",
+    "Do not change any other copy beyond the unauthenticated login button label."
   ],
   "imageRequirements": {
     "required": [],

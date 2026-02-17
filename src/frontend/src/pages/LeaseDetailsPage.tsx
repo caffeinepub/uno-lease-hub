@@ -1,18 +1,20 @@
 import { useParams, Link } from '@tanstack/react-router';
-import { useGetActiveListings } from '../hooks/useLeaseListings';
+import { useGetPublicListings } from '../hooks/useLeaseListings';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import SubmitLeaseRequestForm from '../components/requests/SubmitLeaseRequestForm';
-import { MapPin, Square, Users, ArrowLeft, FileCode, Split, Copy, Check } from 'lucide-react';
+import { ArrowLeft, FileCode, Split, Copy, Check, AlertCircle } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { getAvailabilityInfo, getUnavailableMessage } from '../utils/leaseAvailability';
 
 export default function LeaseDetailsPage() {
   const { listingId } = useParams({ from: '/listings/$listingId' });
-  const { data: listings, isLoading } = useGetActiveListings();
+  const { data: listings, isLoading } = useGetPublicListings();
   const [copied, setCopied] = useState(false);
 
   const listing = listings?.find((l) => l.id === listingId);
@@ -80,6 +82,9 @@ export default function LeaseDetailsPage() {
     );
   }
 
+  const availabilityInfo = getAvailabilityInfo(listing.status);
+  const unavailableMessage = getUnavailableMessage(listing.status);
+
   return (
     <div className="container mx-auto px-4 py-6 sm:py-8">
       <Button asChild variant="ghost" className="mb-6">
@@ -96,71 +101,50 @@ export default function LeaseDetailsPage() {
               <div className="flex items-start justify-between">
                 <div>
                   <CardTitle className="text-2xl sm:text-3xl">Lease #{listing.id}</CardTitle>
-                  {listing.location && (
-                    <CardDescription className="mt-2 flex items-center gap-2">
-                      <MapPin className="h-4 w-4" />
-                      {listing.location}
-                    </CardDescription>
-                  )}
                 </div>
-                <Badge variant={listing.status === 'active' ? 'default' : 'secondary'} className="text-sm">
-                  {listing.status === 'active' ? 'Active' : 'Archived'}
+                <Badge variant={availabilityInfo.variant} className="text-sm">
+                  {availabilityInfo.label}
                 </Badge>
               </div>
             </CardHeader>
             <CardContent className="space-y-6">
+              {unavailableMessage && (
+                <Alert variant="destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>{unavailableMessage}</AlertDescription>
+                </Alert>
+              )}
+
               <div>
                 <h3 className="mb-4 text-lg font-semibold">Lease Details</h3>
                 <div className="space-y-4">
-                  {listing.code && (
-                    <div className="flex items-start gap-3 rounded-lg border p-4">
-                      <FileCode className="mt-0.5 h-5 w-5 text-muted-foreground flex-shrink-0" />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-muted-foreground">Lease Code (UUID)</p>
-                        <div className="mt-1 flex items-center gap-2">
-                          <code className="block font-mono text-sm break-all">{listing.code}</code>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={handleCopyCode}
-                            className="flex-shrink-0"
-                          >
-                            {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                          </Button>
-                        </div>
+                  <div className="flex items-start gap-3 rounded-lg border p-4">
+                    <FileCode className="mt-0.5 h-5 w-5 text-muted-foreground flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-muted-foreground">Lease Code (UUID)</p>
+                      <div className="mt-1 flex items-center gap-2">
+                        <code className="block font-mono text-sm break-all">{listing.code}</code>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={handleCopyCode}
+                          className="flex-shrink-0"
+                        >
+                          {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                        </Button>
                       </div>
                     </div>
-                  )}
-                  {listing.splitRatio && (
-                    <div className="flex items-start gap-3 rounded-lg border p-4">
-                      <Split className="mt-0.5 h-5 w-5 text-muted-foreground flex-shrink-0" />
-                      <div className="flex-1">
-                        <p className="text-sm font-medium text-muted-foreground">Split Ratio</p>
-                        <p className="mt-1 text-base">
-                          <span className="font-semibold">NLO:</span> {listing.splitRatio.nlo.toString()} /{' '}
-                          <span className="font-semibold">ULO:</span> {listing.splitRatio.ulo.toString()}
-                        </p>
-                      </div>
+                  </div>
+                  <div className="flex items-start gap-3 rounded-lg border p-4">
+                    <Split className="mt-0.5 h-5 w-5 text-muted-foreground flex-shrink-0" />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-muted-foreground">Split Ratio</p>
+                      <p className="mt-1 text-base">
+                        <span className="font-semibold">NLO:</span> {listing.splitRatio.nlo.toString()} /{' '}
+                        <span className="font-semibold">ULO:</span> {listing.splitRatio.ulo.toString()}
+                      </p>
                     </div>
-                  )}
-                  {listing.area !== undefined && (
-                    <div className="flex items-start gap-3 rounded-lg border p-4">
-                      <Square className="mt-0.5 h-5 w-5 text-muted-foreground flex-shrink-0" />
-                      <div className="flex-1">
-                        <p className="text-sm font-medium text-muted-foreground">Area</p>
-                        <p className="mt-1 text-base font-semibold">{listing.area.toString()} sq ft</p>
-                      </div>
-                    </div>
-                  )}
-                  {listing.capacity !== undefined && (
-                    <div className="flex items-start gap-3 rounded-lg border p-4">
-                      <Users className="mt-0.5 h-5 w-5 text-muted-foreground flex-shrink-0" />
-                      <div className="flex-1">
-                        <p className="text-sm font-medium text-muted-foreground">Node Capacity</p>
-                        <p className="mt-1 text-base font-semibold">{listing.capacity.toString()} nodes</p>
-                      </div>
-                    </div>
-                  )}
+                  </div>
                 </div>
               </div>
 
@@ -169,9 +153,9 @@ export default function LeaseDetailsPage() {
               <div>
                 <h3 className="mb-2 text-lg font-semibold">About This Lease</h3>
                 <p className="text-sm text-muted-foreground">
-                  This is an active ULO (Unity Lease Offering) listing. Use the lease code above in the Unity Network
+                  This is a ULO (Unity Lease Offering) listing. Use the lease code above in the Unity Network
                   App to activate your lease. The split ratio determines how rewards are distributed between the NLO
-                  (Node Lease Owner) and ULO (Unity Lease Owner).
+                  (Node Lease Owner) and ULO (Unity Lease Owner). Each lease code can only be used once.
                 </p>
               </div>
             </CardContent>

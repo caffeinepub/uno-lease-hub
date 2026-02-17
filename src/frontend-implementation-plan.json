@@ -1,57 +1,22 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Make Location/Area/Capacity optional in dashboard create/edit and public browsing UI",
+  "title": "ULO Lease Hub — Rename unauthenticated login button label to Admin Login",
   "requirements": [
     {
-      "id": "REQ-30",
-      "summary": "Update dashboard create/edit lease listing flow to require only Listing ID, Lease Code, and Split Ratio and align create/update mutations with the updated backend API.",
+      "id": "REQ-37",
+      "summary": "Change the unauthenticated top-nav auth button label from \"Login\" to \"Admin Login\" while keeping \"Logout\" and \"Logging in...\" unchanged.",
       "acceptanceCriteria": [
-        "frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx continues to require only Listing ID, Lease Code, and Split Ratio for submission.",
-        "frontend/src/hooks/useOwnerDashboard.ts create/update mutation function signatures and actor calls are updated to match the new backend method signatures (no required location/area/capacity arguments).",
-        "Creating and updating a listing from the dashboard succeeds without providing location/area/capacity and persists the lease code and split ratio."
+        "When not authenticated, the button rendered by frontend/src/components/auth/LoginButton.tsx displays \"Admin Login\" (or \"Admin Only\") instead of \"Login\".",
+        "When authenticated, the button still displays \"Logout\".",
+        "While the login action is in progress, the button still displays \"Logging in...\".",
+        "No backend/Candid changes are made for this text-only change."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx",
+          "path": "frontend/src/components/auth/LoginButton.tsx",
           "operation": "modify",
-          "description": "Remove any implicit/placeholder submission values for location/area/capacity (e.g., 'Unspecified', 0n) and submit only { id, code, splitRatio } (with splitRatio parsed to { nlo, ulo }) to the create/update mutations; keep validation and required-field enforcement limited to Listing ID, Lease Code (UUID), and Split Ratio (NLO/ULO)."
-        },
-        {
-          "path": "frontend/src/hooks/useOwnerDashboard.ts",
-          "operation": "modify",
-          "description": "Update create/update mutation input types to no longer require location/area/capacity, and update actor call argument ordering/signatures to match the updated backend capability (i.e., do not require passing location/area/capacity for success; if still supported, pass null/omitted per the updated typings)."
-        },
-        {
-          "path": "frontend/src/components/dashboard/OwnerOffersPanel.tsx",
-          "operation": "modify",
-          "description": "Make the dashboard listings table resilient to optional location/area/capacity by avoiding unconditional rendering/toString() calls on potentially-absent fields (e.g., show a neutral placeholder like '—' when missing), so owner listings continue to render cleanly after the model change."
-        }
-      ]
-    },
-    {
-      "id": "REQ-31",
-      "summary": "Update public browsing UI to omit Location/Area/Capacity headings when those fields are absent and keep listing cards/details rendering clean with optional fields.",
-      "acceptanceCriteria": [
-        "frontend/src/components/leases/LeaseListingCard.tsx does not show Location/Area/Capacity UI when the corresponding fields are not present on the listing.",
-        "frontend/src/pages/LeaseDetailsPage.tsx does not show Location/Area/Capacity sections when the corresponding fields are not present on the listing.",
-        "Lease Code and Split Ratio continue to display on Lease Details when present, using English labels and explicitly attributing split values to NLO then ULO."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/leases/LeaseListingCard.tsx",
-          "operation": "modify",
-          "description": "Conditionally render Location/Area/Capacity sections only when listing.location/listing.area/listing.capacity are present; avoid calling toString() on optional values; keep the card layout tidy when one or more fields are missing."
-        },
-        {
-          "path": "frontend/src/pages/LeaseDetailsPage.tsx",
-          "operation": "modify",
-          "description": "Conditionally render Location/Area/Capacity blocks only when their corresponding listing fields are present; ensure Lease Code and Split Ratio sections remain visible when present and that split ratio is labeled in English and shown as 'NLO <nlo> / ULO <ulo>'."
-        },
-        {
-          "path": "frontend/src/pages/LeaseListingsPage.tsx",
-          "operation": "modify",
-          "description": "Adjust sorting logic to handle optional area/capacity safely (treat missing values as 0 or sort them last) to prevent runtime errors and keep the listings page rendering clean after optional-field changes."
+          "description": "Update the unauthenticated render branch text label from \"Login\" to \"Admin Login\", leaving the authenticated (\"Logout\") and in-progress (\"Logging in...\") labels unchanged. Do not modify any files under frontend/src/components/ui (read-only UI components)."
         }
       ]
     }

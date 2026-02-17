@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useGetActiveListings } from '../hooks/useLeaseListings';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useGetPublicListings } from '../hooks/useLeaseListings';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import LeaseListingCard from '../components/leases/LeaseListingCard';
@@ -8,24 +8,10 @@ import EmptyState from '../components/leases/EmptyState';
 import { Filter } from 'lucide-react';
 
 export default function LeaseListingsPage() {
-  const { data: listings, isLoading } = useGetActiveListings();
-  const [sortBy, setSortBy] = useState<'newest' | 'area' | 'capacity'>('newest');
+  const { data: listings, isLoading } = useGetPublicListings();
+  const [sortBy, setSortBy] = useState<'newest'>('newest');
 
-  const sortedListings = listings
-    ? [...listings].sort((a, b) => {
-        if (sortBy === 'area') {
-          const areaA = a.area !== undefined ? a.area : 0n;
-          const areaB = b.area !== undefined ? b.area : 0n;
-          return Number(areaB - areaA);
-        }
-        if (sortBy === 'capacity') {
-          const capacityA = a.capacity !== undefined ? a.capacity : 0n;
-          const capacityB = b.capacity !== undefined ? b.capacity : 0n;
-          return Number(capacityB - capacityA);
-        }
-        return 0; // newest (default order from backend)
-      })
-    : [];
+  const sortedListings = listings ? [...listings] : [];
 
   return (
     <div className="container mx-auto px-4 py-6 sm:py-8">
@@ -45,8 +31,6 @@ export default function LeaseListingsPage() {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="newest">Newest First</SelectItem>
-            <SelectItem value="area">Largest Area</SelectItem>
-            <SelectItem value="capacity">Highest Capacity</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -68,7 +52,7 @@ export default function LeaseListingsPage() {
       ) : sortedListings.length === 0 ? (
         <EmptyState
           title="No Active Leases"
-          description="There are no active lease listings at the moment. Check back soon or create your own listing."
+          description="There are no active lease listings at the moment. Check back soon."
         />
       ) : (
         <div className="grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">

@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 25,
+  "projectStateVersion": 29,
   "summary": "Plan a custom, mobile-compatible website running on the ICP blockchain for UNO/ULO lease listings and lease-code distribution, using unitynodes.club as UI inspiration but aligning product/content guidance with https://unitynodes.io (Unity mobile app is not ICP-powered). The site should clearly communicate there is a single UNO/admin offering ULO lease codes, and ULO users only browse listings and copy lease codes for use in the Unity App (no additional ULO functionality).",
   "architectural_notes": [
     "Target deployment/runtime: ICP blockchain (Internet Computer).",
@@ -19,9 +19,10 @@
     "Build/deploy action to 'make the site live' intermittently fails with an error ('AI couldn't process your request successfully').",
     "Draft environment may fail to load some images and YouTube embeds, causing media not to appear in draft previews.",
     "User reports being unable to log in to the site via Internet Identity (II sign-in flow not completing).",
-    "Creating a lease listing can fail with \"Actor not available\" error (frontend unable to create authenticated actor / identity not available)."
+    "Creating a lease listing can fail with \"Actor not available\" error (frontend unable to create authenticated actor / identity not available).",
+    "After logging out of the UNO dashboard, newly-updated lease code listings may not appear on the public site (public listings/details rendering issue when only Lease Code + Split Ratio are present)."
   ],
-  "isFixRequest": true,
+  "isFixRequest": false,
   "existing_features": [
     {
       "id": "feature-create-a-public-facing-website-ui-inspired-by-https-unitynodes-club-layout-and-interaction-patterns-but-implemented-as-a-standalone-react-app-running-on-the-internet-computer",
@@ -246,6 +247,46 @@
         "REQ-31"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-fix-public-visibility-so-active-lease-listings-lease-code-split-ratio-availability-status-are-readable-by-any-site-visitor-even-when-no-one-is-logged-in-and-newly-updated-listings-remain-visible-after-the-admin-logs-out",
+      "title": "Fix public visibility so active lease listings (lease code + split ratio + availability status) are readable by any site visitor even when no one is logged in, and newly-updated listings remain visible after the admin logs out.",
+      "reqIds": [
+        "REQ-32"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-an-explicit-lease-availability-status-field-to-each-lease-listing-that-the-admin-can-update-in-the-dashboard-persist-in-the-backend-and-display-publicly-alongside-the-lease-code-and-split-ratio",
+      "title": "Add an explicit lease availability status field to each lease listing that the admin can update in the dashboard, persist in the backend, and display publicly alongside the lease code and split ratio.",
+      "reqIds": [
+        "REQ-33"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-public-lease-browsing-ui-so-public-visitors-see-only-lease-code-uuid-split-ratio-with-nlo-and-ulo-attribution-and-availability-status-do-not-show-location-area-capacity-or-any-sorting-filtering-based-on-those-fields",
+      "title": "Update the public lease browsing UI so public visitors see ONLY: Lease Code (UUID), Split Ratio (with NLO and ULO attribution), and Availability Status; do not show Location/Area/Capacity or any sorting/filtering based on those fields.",
+      "reqIds": [
+        "REQ-34"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-public-facing-messaging-tied-to-availability-status-so-visitors-are-clearly-informed-when-a-lease-code-is-already-in-use-and-should-try-a-different-listing-code",
+      "title": "Add public-facing messaging tied to availability status so visitors are clearly informed when a lease code is already in use and should try a different listing/code.",
+      "reqIds": [
+        "REQ-36"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-top-navigation-authentication-button-label-so-that-when-the-user-is-not-authenticated-it-displays-admin-login-or-admin-only-instead-of-login-while-keeping-the-authenticated-state-label-as-logout-and-the-in-progress-label-as-logging-in",
+      "title": "Update the top navigation authentication button label so that when the user is not authenticated it displays \"Admin Login\" (or \"Admin Only\") instead of \"Login\", while keeping the authenticated state label as \"Logout\" and the in-progress label as \"Logging in...\".",
+      "reqIds": [
+        "REQ-37"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -361,6 +402,32 @@
       "reqIds": [
         "REQ-29"
       ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-21",
+      "summary": "Add an availability/status field for each lease code listing that UNO can set in the dashboard and that is displayed publicly alongside Lease Code + Split Ratio",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-22",
+      "summary": "Support single-use lease codes per client and indicate to users when a code is already in use so they should try the next code",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-26",
+      "summary": "Enforce single-admin control for lease listing management so only one approved Internet Identity principal can access/update lease offerings (create/update/archive listings and change availability), while all other users/visitors remain read-only.",
+      "reqIds": [
+        "REQ-35"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-27",
+      "summary": "Change the site login button label to reflect single-admin usage (e.g., \"Admin Login\" or \"Admin Only\" instead of \"Login\")",
+      "reqIds": [],
       "status": "pending"
     }
   ],

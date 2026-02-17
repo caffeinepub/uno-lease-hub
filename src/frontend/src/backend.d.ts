@@ -26,7 +26,6 @@ export interface UserProfile {
 export interface LeaseListing {
     id: string;
     status: LeaseStatus;
-    owner: Principal;
     area?: bigint;
     code: string;
     splitRatio: SplitRatio;
@@ -34,8 +33,9 @@ export interface LeaseListing {
     location?: string;
 }
 export enum LeaseStatus {
-    active = "active",
-    archived = "archived"
+    available = "available",
+    archived = "archived",
+    unavailable = "unavailable"
 }
 export enum UserRole {
     admin = "admin",
@@ -60,6 +60,7 @@ export interface backendInterface {
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
     getOwnerListings(): Promise<Array<LeaseListing>>;
+    getPublicListings(): Promise<Array<LeaseListing>>;
     getRequestsForListing(listingId: string): Promise<Array<LeaseRequest>>;
     getRequestsForOwner(): Promise<Array<LeaseRequest>>;
     getTenantRequests(): Promise<Array<LeaseRequest>>;
@@ -67,6 +68,7 @@ export interface backendInterface {
     isCallerAdmin(): Promise<boolean>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
     submitLeaseRequest(listingId: string, info: string): Promise<string>;
+    updateLeaseAvailability(id: string, status: LeaseStatus): Promise<void>;
     updateLeaseListing(id: string, code: string, splitRatio: SplitRatio, location: string | null, area: bigint | null, capacity: bigint | null): Promise<void>;
     updateRequestStatus(requestId: string, newStatus: Variant_rejected_accepted): Promise<void>;
 }

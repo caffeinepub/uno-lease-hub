@@ -1,20 +1,30 @@
 import { useState } from 'react';
 import { useGetOwnerListings } from '../../hooks/useLeaseListings';
-import { useArchiveLeaseListing } from '../../hooks/useOwnerDashboard';
+import { useArchiveLeaseListing, useUpdateLeaseAvailability } from '../../hooks/useOwnerDashboard';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Skeleton } from '@/components/ui/skeleton';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import LeaseOfferEditorDialog from './LeaseOfferEditorDialog';
 import EmptyState from '../leases/EmptyState';
 import { Plus, Edit, Archive } from 'lucide-react';
 import { toast } from 'sonner';
-import type { LeaseListing } from '../../backend';
+import type { LeaseListing, LeaseStatus } from '../../backend';
+import { getAvailabilityInfo } from '../../utils/leaseAvailability';
+import { LeaseStatus as LeaseStatusEnum } from '../../backend';
 
 export default function OwnerOffersPanel() {
   const { data: listings, isLoading } = useGetOwnerListings();
   const archiveListing = useArchiveLeaseListing();
+  const updateAvailability = useUpdateLeaseAvailability();
   const [editorOpen, setEditorOpen] = useState(false);
   const [editingListing, setEditingListing] = useState<LeaseListing | null>(null);
 
@@ -34,6 +44,15 @@ export default function OwnerOffersPanel() {
       toast.success('Listing archived successfully');
     } catch (error: any) {
       toast.error(error.message || 'Failed to archive listing');
+    }
+  };
+
+  const handleAvailabilityChange = async (id: string, status: LeaseStatus) => {
+    try {
+      await updateAvailability.mutateAsync({ id, status });
+      toast.success('Availability updated successfully');
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to update availability');
     }
   };
 
@@ -80,42 +99,60 @@ export default function OwnerOffersPanel() {
                     <TableHead>ID</TableHead>
                     <TableHead>Lease Code</TableHead>
                     <TableHead>Split Ratio</TableHead>
-                    <TableHead>Status</TableHead>
+                    <TableHead>Availability</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {listings.map((listing) => (
-                    <TableRow key={listing.id}>
-                      <TableCell className="font-medium">{listing.id}</TableCell>
-                      <TableCell className="font-mono text-xs">{listing.code || '—'}</TableCell>
-                      <TableCell>
-                        {listing.splitRatio ? `${listing.splitRatio.nlo}/${listing.splitRatio.ulo}` : '—'}
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={listing.status === 'active' ? 'default' : 'secondary'}>
-                          {listing.status === 'active' ? 'Active' : 'Archived'}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
-                          <Button variant="ghost" size="sm" onClick={() => handleEdit(listing)}>
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          {listing.status === 'active' && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleArchive(listing.id)}
-                              disabled={archiveListing.isPending}
-                            >
-                              <Archive className="h-4 w-4" />
+                  {listings.map((listing) => {
+                    const availabilityInfo = getAvailabilityInfo(listing.status);
+                    return (
+                      <TableRow key={listing.id}>
+                        <TableCell className="font-medium">{listing.id}</TableCell>
+                        <TableCell className="font-mono text-xs">{listing.code || '—'}</TableCell>
+                        <TableCell>
+                          {listing.splitRatio ? `${listing.splitRatio.nlo}/${listing.splitRatio.ulo}` : '—'}
+                        </TableCell>
+                        <TableCell>
+                          <Select
+                            value={listing.status}
+                            onValueChange={(value) => handleAvailabilityChange(listing.id, value as LeaseStatus)}
+                            disabled={updateAvailability.isPending}
+                          >
+                            <SelectTrigger className="w-[140px]">
+                              <SelectValue>
+                                <Badge variant={availabilityInfo.variant} className="text-xs">
+                                  {availabilityInfo.label}
+                                </Badge>
+                              </SelectValue>
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value={LeaseStatusEnum.available}>Available</SelectItem>
+                              <SelectItem value={LeaseStatusEnum.unavailable}>In Use</SelectItem>
+                              <SelectItem value={LeaseStatusEnum.archived}>Archived</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-2">
+                            <Button variant="ghost" size="sm" onClick={() => handleEdit(listing)}>
+                              <Edit className="h-4 w-4" />
                             </Button>
-                          )}
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                            {listing.status !== LeaseStatusEnum.archived && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleArchive(listing.id)}
+                                disabled={archiveListing.isPending}
+                              >
+                                <Archive className="h-4 w-4" />
+                              </Button>
+                            )}
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
             </div>

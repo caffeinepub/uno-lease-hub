@@ -1,71 +1,34 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-17T04:12:03.250Z",
+  "generatedAt": "2026-02-17T05:00:27.069Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 3,
-    "implemented": 2,
+    "total": 1,
+    "implemented": 1,
     "items": [
       {
-        "id": "REQ-29",
-        "summary": "Update the backend lease listing data model and public Candid API so that Location, Area, and Capacity are optional/not required, and only Lease Code and Split Ratio are required for lease listings.",
-        "status": "unknown",
-        "plannedFiles": [],
-        "matchedFiles": []
-      },
-      {
-        "id": "REQ-30",
-        "summary": "Update the frontend dashboard “Create/Edit Lease Listing” flow so only Listing ID, Lease Code (UUID), and Split Ratio (NLO/ULO) are required inputs, and ensure the create/update mutations match the updated backend API (no required Location/Area/Capacity fields).",
+        "id": "REQ-37",
+        "summary": "Update the top navigation authentication button label so that when the user is not authenticated it displays \"Admin Login\" (or \"Admin Only\") instead of \"Login\", while keeping the authenticated state label as \"Logout\" and the in-progress label as \"Logging in...\".",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx",
-          "frontend/src/hooks/useOwnerDashboard.ts",
-          "frontend/src/components/dashboard/OwnerOffersPanel.tsx"
+          "frontend/src/components/auth/LoginButton.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx",
-          "frontend/src/hooks/useOwnerDashboard.ts",
-          "frontend/src/components/dashboard/OwnerOffersPanel.tsx"
-        ]
-      },
-      {
-        "id": "REQ-31",
-        "summary": "Remove Location/Area/Capacity as required “headings” in the public lease browsing UI by not displaying those fields when they are absent, and ensure the listings and details pages still render cleanly with the new optional listing fields.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/leases/LeaseListingCard.tsx",
-          "frontend/src/pages/LeaseDetailsPage.tsx",
-          "frontend/src/pages/LeaseListingsPage.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/leases/LeaseListingCard.tsx",
-          "frontend/src/pages/LeaseDetailsPage.tsx",
-          "frontend/src/pages/LeaseListingsPage.tsx"
+          "frontend/src/components/auth/LoginButton.tsx"
         ]
       }
     ]
   },
   "changedFiles": [
-    "backend/main.mo",
-    "backend/migration.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/backend.d.ts",
-    "frontend/src/backend.ts",
-    "frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx",
-    "frontend/src/components/dashboard/OwnerOffersPanel.tsx",
-    "frontend/src/components/leases/LeaseListingCard.tsx",
-    "frontend/src/declarations/backend.did.d.ts",
-    "frontend/src/declarations/backend.did.js",
-    "frontend/src/hooks/useOwnerDashboard.ts",
-    "frontend/src/pages/LeaseDetailsPage.tsx",
-    "frontend/src/pages/LeaseListingsPage.tsx",
+    "frontend/src/components/auth/LoginButton.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

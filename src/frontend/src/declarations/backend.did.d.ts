@@ -13,7 +13,6 @@ import type { Principal } from '@icp-sdk/core/principal';
 export interface LeaseListing {
   'id' : string,
   'status' : LeaseStatus,
-  'owner' : Principal,
   'area' : [] | [bigint],
   'code' : string,
   'splitRatio' : SplitRatio,
@@ -31,8 +30,9 @@ export interface LeaseRequest {
   'tenant' : Principal,
   'requestDate' : Time,
 }
-export type LeaseStatus = { 'active' : null } |
-  { 'archived' : null };
+export type LeaseStatus = { 'available' : null } |
+  { 'archived' : null } |
+  { 'unavailable' : null };
 export interface SplitRatio { 'nlo' : bigint, 'ulo' : bigint }
 export type Time = bigint;
 export interface UserProfile { 'name' : string }
@@ -51,6 +51,7 @@ export interface _SERVICE {
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
   'getOwnerListings' : ActorMethod<[], Array<LeaseListing>>,
+  'getPublicListings' : ActorMethod<[], Array<LeaseListing>>,
   'getRequestsForListing' : ActorMethod<[string], Array<LeaseRequest>>,
   'getRequestsForOwner' : ActorMethod<[], Array<LeaseRequest>>,
   'getTenantRequests' : ActorMethod<[], Array<LeaseRequest>>,
@@ -58,6 +59,7 @@ export interface _SERVICE {
   'isCallerAdmin' : ActorMethod<[], boolean>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
   'submitLeaseRequest' : ActorMethod<[string, string], string>,
+  'updateLeaseAvailability' : ActorMethod<[string, LeaseStatus], undefined>,
   'updateLeaseListing' : ActorMethod<
     [string, string, SplitRatio, [] | [string], [] | [bigint], [] | [bigint]],
     undefined

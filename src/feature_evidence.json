@@ -2,12 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-update-the-frontend-dashboard-create-edit-lease-listing-flow-so-only-listing-id-lease-code-uuid-and-split-ratio-nlo-ulo-are-required-inputs-and-ensure-the-create-update-mutations-match-the-updated-backend-api-no-required-location-area-capacity-fields",
-      "featureTitle": "Update the frontend dashboard “Create/Edit Lease Listing” flow so only Listing ID, Lease Code (UUID), and Split Ratio (NLO/ULO) are required inputs, and ensure the create/update mutations match the updated backend API (no required Location/Area/Capacity fields).",
+      "featureId": "feature-update-the-top-navigation-authentication-button-label-so-that-when-the-user-is-not-authenticated-it-displays-admin-login-or-admin-only-instead-of-login-while-keeping-the-authenticated-state-label-as-logout-and-the-in-progress-label-as-logging-in",
+      "featureTitle": "Update the top navigation authentication button label so that when the user is not authenticated it displays \"Admin Login\" (or \"Admin Only\") instead of \"Login\", while keeping the authenticated state label as \"Logout\" and the in-progress label as \"Logging in...\".",
       "files": [
-        "frontend/src/components/dashboard/LeaseOfferEditorDialog.tsx",
-        "frontend/src/components/dashboard/OwnerOffersPanel.tsx",
-        "frontend/src/hooks/useOwnerDashboard.ts"
+        "frontend/src/components/auth/LoginButton.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -18,28 +16,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-30"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-remove-location-area-capacity-as-required-headings-in-the-public-lease-browsing-ui-by-not-displaying-those-fields-when-they-are-absent-and-ensure-the-listings-and-details-pages-still-render-cleanly-with-the-new-optional-listing-fields",
-      "featureTitle": "Remove Location/Area/Capacity as required “headings” in the public lease browsing UI by not displaying those fields when they are absent, and ensure the listings and details pages still render cleanly with the new optional listing fields.",
-      "files": [
-        "frontend/src/components/leases/LeaseListingCard.tsx",
-        "frontend/src/pages/LeaseDetailsPage.tsx",
-        "frontend/src/pages/LeaseListingsPage.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-31"
+        "REQ-37"
       ],
       "confidence": "high"
     }

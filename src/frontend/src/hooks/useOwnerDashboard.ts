@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
-import type { SplitRatio } from '../backend';
+import type { SplitRatio, LeaseStatus } from '../backend';
 
 export function useCreateLeaseListing() {
   const { actor } = useActor();
@@ -27,7 +27,7 @@ export function useCreateLeaseListing() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['ownerListings'] });
-      queryClient.invalidateQueries({ queryKey: ['activeListings'] });
+      queryClient.invalidateQueries({ queryKey: ['publicListings'] });
     },
   });
 }
@@ -57,7 +57,7 @@ export function useUpdateLeaseListing() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['ownerListings'] });
-      queryClient.invalidateQueries({ queryKey: ['activeListings'] });
+      queryClient.invalidateQueries({ queryKey: ['publicListings'] });
     },
   });
 }
@@ -73,7 +73,23 @@ export function useArchiveLeaseListing() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['ownerListings'] });
-      queryClient.invalidateQueries({ queryKey: ['activeListings'] });
+      queryClient.invalidateQueries({ queryKey: ['publicListings'] });
+    },
+  });
+}
+
+export function useUpdateLeaseAvailability() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: LeaseStatus }) => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.updateLeaseAvailability(id, status);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['ownerListings'] });
+      queryClient.invalidateQueries({ queryKey: ['publicListings'] });
     },
   });
 }

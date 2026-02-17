@@ -7,13 +7,13 @@ import Time "mo:core/Time";
 import Order "mo:core/Order";
 import Principal "mo:core/Principal";
 import MixinAuthorization "authorization/MixinAuthorization";
-import AccessControl "authorization/access-control";
-import Migration "migration";
 
-(with migration = Migration.run)
+import AccessControl "authorization/access-control";
+
+
 actor {
-  // ==== Types ====  
-  public type LeaseStatus = { #active; #archived };
+  // ==== Types ====
+  public type LeaseStatus = { #available; #archived; #unavailable };
 
   public type SplitRatio = {
     nlo : Nat;
@@ -26,7 +26,6 @@ actor {
     area : ?Nat;
     capacity : ?Nat;
     status : LeaseStatus;
-    owner : Principal;
     code : Text;
     splitRatio : SplitRatio;
   };
@@ -96,8 +95,8 @@ actor {
     area : ?Nat,
     capacity : ?Nat,
   ) : async Text {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only users can create lease listings");
+    if (not (AccessControl.isAdmin(accessControlState, caller))) {
+      Runtime.trap("Unauthorized: Only admins can create lease listings");
     };
 
     let listing : LeaseListing = {
@@ -107,22 +106,10 @@ actor {
       location;
       area;
       capacity;
-      status = #active;
-      owner = caller;
+      status = #available;
     };
 
     leaseListings.add(id, listing);
-
-    switch (ownerListings.get(caller)) {
-      case (null) {
-        let newSet = Set.empty<Text>();
-        newSet.add(id);
-        ownerListings.add(caller, newSet);
-      };
-      case (?listingSet) {
-        listingSet.add(id);
-      };
-    };
 
     id;
   };
@@ -135,17 +122,13 @@ actor {
     area : ?Nat,
     capacity : ?Nat,
   ) : async () {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only users can update listings");
+    if (not (AccessControl.isAdmin(accessControlState, caller))) {
+      Runtime.trap("Unauthorized: Only admins can update listings");
     };
 
     switch (leaseListings.get(id)) {
       case (null) { Runtime.trap("Listing not found") };
       case (?existingListing) {
-        if (existingListing.owner != caller and not AccessControl.isAdmin(accessControlState, caller)) {
-          Runtime.trap("Unauthorized: Only the listing owner can update this listing");
-        };
-
         let updatedListing : LeaseListing = {
           existingListing with
           code;
@@ -160,36 +143,50 @@ actor {
   };
 
   public shared ({ caller }) func archiveLeaseListing(id : Text) : async () {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only users can archive listings");
+    if (not (AccessControl.isAdmin(accessControlState, caller))) {
+      Runtime.trap("Unauthorized: Only admins can archive listings");
     };
 
     switch (leaseListings.get(id)) {
       case (null) { Runtime.trap("Listing not found") };
       case (?listing) {
-        if (listing.owner != caller and not AccessControl.isAdmin(accessControlState, caller)) {
-          Runtime.trap("Unauthorized: Only the listing owner can archive this listing");
-        };
-
-        let updatedListing : LeaseListing = {
-          listing with
-          status = #archived;
+        let updatedListing = {
+          listing with status = #archived;
         };
         leaseListings.add(id, updatedListing);
       };
     };
   };
 
-  public query ({ caller }) func getActiveListings() : async [LeaseListing] {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only users can view listings");
+  public shared ({ caller }) func updateLeaseAvailability(id : Text, status : LeaseStatus) : async () {
+    if (not (AccessControl.isAdmin(accessControlState, caller))) {
+      Runtime.trap("Unauthorized: Only the admin can update lease availability");
     };
-    leaseListings.values().toArray().filter(func(l) { l.status == #active }).sort();
+
+    switch (leaseListings.get(id)) {
+      case (null) { Runtime.trap("Listing not found") };
+      case (?listing) {
+        let updatedListing = { listing with status };
+        leaseListings.add(id, updatedListing);
+      };
+    };
+  };
+
+  // Public query - no authentication required, accessible by guests
+  public query func getActiveListings() : async [LeaseListing] {
+    leaseListings.values().toArray().filter(func(l) { l.status == #available }).sort();
+  };
+
+  // Public query - no authentication required, accessible by guests
+  public query func getPublicListings() : async [LeaseListing] {
+    leaseListings.filter(
+      func(_id, listing) { listing.status == #available }
+    ).values().toArray();
   };
 
   // ==== Lease Request Management ====
   public shared ({ caller }) func submitLeaseRequest(listingId : Text, info : Text) : async Text {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only signed-in users can submit requests");
     };
 
@@ -211,8 +208,8 @@ actor {
   };
 
   public shared ({ caller }) func updateRequestStatus(requestId : Text, newStatus : { #accepted; #rejected }) : async () {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only users can update request status");
+    if (not (AccessControl.isAdmin(accessControlState, caller))) {
+      Runtime.trap("Unauthorized: Only the admin can update request status");
     };
 
     switch (leaseRequests.get(requestId)) {
@@ -220,10 +217,7 @@ actor {
       case (?req) {
         switch (leaseListings.get(req.listingId)) {
           case (null) { Runtime.trap("Listing not found") };
-          case (?listing) {
-            if (listing.owner != caller and not AccessControl.isAdmin(accessControlState, caller)) {
-              Runtime.trap("Unauthorized: Only the listing owner can change request status");
-            };
+          case (_) {
             let updatedRequest = { req with status = newStatus };
             leaseRequests.add(requestId, updatedRequest);
           };
@@ -233,24 +227,16 @@ actor {
   };
 
   public query ({ caller }) func getRequestsForListing(listingId : Text) : async [LeaseRequest] {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only users can view requests");
+    if (not (AccessControl.isAdmin(accessControlState, caller))) {
+      Runtime.trap("Unauthorized: Only the admin can view requests for listings");
     };
 
-    switch (leaseListings.get(listingId)) {
-      case (null) { Runtime.trap("Listing not found") };
-      case (?listing) {
-        if (listing.owner != caller and not AccessControl.isAdmin(accessControlState, caller)) {
-          Runtime.trap("Unauthorized: Only the listing owner can view requests");
-        };
-
-        leaseRequests.filter(func(_id, r) { r.listingId == listingId }).values().toArray().sort();
-      };
-    };
+    let filtered = leaseRequests.filter(func(_id, r) { r.listingId == listingId });
+    filtered.values().toArray();
   };
 
   public query ({ caller }) func getTenantRequests() : async [LeaseRequest] {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only signed-in users can view their requests");
     };
     let userRequests = leaseRequests.filter(
@@ -259,48 +245,20 @@ actor {
     userRequests.values().toArray();
   };
 
-  // ==== Admin Dashboard Functions ====
   public query ({ caller }) func getOwnerListings() : async [LeaseListing] {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only users can view their listings");
+    if (not (AccessControl.isAdmin(accessControlState, caller))) {
+      Runtime.trap("Unauthorized: Only the admin can view owner listings");
     };
 
-    switch (ownerListings.get(caller)) {
-      case (null) { [] };
-      case (?listingSet) {
-        let listingIds = listingSet.toArray();
-        listingIds.map(
-          func(id) {
-            switch (leaseListings.get(id)) {
-              case (null) { Runtime.trap("Listing not found") };
-              case (?listing) { listing };
-            };
-          }
-        );
-      };
-    };
+    leaseListings.values().toArray();
   };
 
   public query ({ caller }) func getRequestsForOwner() : async [LeaseRequest] {
-    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
-      Runtime.trap("Unauthorized: Only users can view their requests");
+    if (not (AccessControl.isAdmin(accessControlState, caller))) {
+      Runtime.trap("Unauthorized: Only the admin can view all requests");
     };
 
-    var ownerRequests : [LeaseRequest] = [];
-
-    switch (ownerListings.get(caller)) {
-      case (null) {};
-      case (?listingSet) {
-        let listingIds = listingSet.toArray();
-        for (listingId in listingIds.values()) {
-          let requests = leaseRequests.filter(
-            func(_id, r) { r.listingId == listingId }
-          );
-          let requestsArray = requests.values().toArray();
-          ownerRequests := ownerRequests.concat(requestsArray);
-        };
-      };
-    };
-    ownerRequests;
+    leaseRequests.values().toArray();
   };
 };
+
